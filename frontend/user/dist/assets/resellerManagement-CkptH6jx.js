@@ -1,0 +1,1 @@
+const E="pending_review",n="active",r="rejected",i="disabled",R="pending_review",S="active",_="disabled",t=e=>e===E?"pendingReview":e===n?"active":e===r?"rejected":e===i?"disabled":"unknown",L=e=>e===R?"pendingReview":e===S?"active":e===_?"disabled":"unknown";export{L as a,t as g};

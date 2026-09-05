@@ -3,8 +3,9 @@
 
 services:
   dujiao-next:
-    # 官方预构建镜像（Docker Hub dujiaonext/dujiao-next，amd64 / arm64），不从源码构建
-    image: dujiaonext/dujiao-next:${IMAGE_TAG}
+    # 默认官方预构建镜像（Docker Hub dujiaonext/dujiao-next，amd64 / arm64），不从源码构建；
+    # 用 custom 分支自建的镜像时只改 IMAGE_REPO / IMAGE_TAG 两个变量
+    image: ${IMAGE_REPO}:${IMAGE_TAG}
     container_name: ${APP_NAME}
     # 镜像没有 USER 指令本来就是 root；显式写出来，bind mount 目录不需要提前 chown
     user: "0:0"
@@ -26,6 +27,8 @@ services:
       # 只信任 Traefik 所在网段送来的 X-Forwarded-For；填错时限流和审计记录的全是网关 IP
       - SERVER_TRUSTED_PROXIES=${TRUSTED_PROXIES}
       - APP_SECRET_KEY=${APP_SECRET_KEY}
+      # 管理员和顾客的验证器里显示的发行方名称；官方镜像默认是上游品牌名
+      - APP_TOTP_ISSUER=${TOTP_ISSUER}
       - JWT_SECRET=${JWT_SECRET}
       - USER_JWT_SECRET=${USER_JWT_SECRET}
       - WEB_ADMIN_PATH=${ADMIN_PATH}

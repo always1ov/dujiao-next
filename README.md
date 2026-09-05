@@ -16,7 +16,9 @@
 | `custom` | 自己改过的代码 | 从 `main` 分出，改动与同步命令记在该分支的 `CUSTOM.md` |
 | `deploy` | 本分支 | 孤儿分支，只有部署文件 |
 
-部署用的是官方预构建镜像，不从源码构建；`custom` 上的改动不会自动进入部署，要部署它们见 `CUSTOM.md`。
+默认用官方预构建镜像，不从源码构建。`custom` 上的改动（含去品牌）不会自动进入部署：
+官方镜像里访客仍会看到上游品牌。要上线 `custom` 的版本，按它的 `CUSTOM.md` 自建镜像后，
+把 `IMAGE_REPO` / `IMAGE_TAG` 改成自建镜像的地址和 tag 再 Redeploy。
 
 ## 1. 这是什么
 
@@ -40,6 +42,7 @@ Dujiao-Next 是数字商品（卡密 / 虚拟物品）自动发货商城：Go �
 5. Deploy
 
 **升级 / 回滚**：改 `IMAGE_TAG` 再 Redeploy。`pull_policy: always` 保证每次都真的拉镜像。
+`IMAGE_REPO` 决定拉哪个仓库：官方镜像或自建镜像。
 `IMAGE_TAG=latest` 自动跟进最新版；出问题改回具体版本号即可回滚（先看第 7 节第 2 条）。
 
 ## 3. 前置条件
@@ -150,8 +153,8 @@ Redis 连接是惰性的：Redis 比应用晚几秒就绪只会留下几条连�
    `CAPTCHA_PROVIDER=turnstile`、`CAPTCHA_TURNSTILE_SITE_KEY=…`、`UPLOAD_MAX_SIZE=20971520`、`CORS_ALLOWED_ORIGINS=a.com,b.com`（列表用逗号）。
    一定要用文件：放到 `../files/dujiao-next/config/config.yml`，挂到 `/app/config.yml:ro`。环境变量仍然优先；
    文件不存在时 Docker 会把它建成目录，先建文件再 Deploy
-5. **`IMAGE_TAG=v1.4.7`。** 依据：Docker Hub 上 `v1.4.7` 与 `latest` 同一时刻（2026-09-02）推送，上游 GitHub Release `v1.4.7` 非预发布。
-   想自动跟进改成 `latest`
+5. **`IMAGE_REPO` 默认官方镜像，`IMAGE_TAG=v1.4.7`。** 依据：Docker Hub 上 `v1.4.7` 与 `latest` 同一时刻（2026-09-02）推送，
+   上游 GitHub Release `v1.4.7` 非预发布。想自动跟进改成 `latest`；用自建镜像时两个变量一起改
 6. **内存上限：应用 768M，Redis 256M。** Go 进程常驻约 100M，余量留给 4096×4096 图片解码。上传大图时容器以 137 退出就放宽应用的上限
 7. **开了抢救通道端口映射**，绑 `HOST_IP:HOST_PORT`，不经 DNS 和 Traefik 直连。不想要：删掉 compose 的 `ports` 段和
    Environment 里的 `HOST_IP`、`HOST_PORT`。注意它没有 HTTPS 也没有任何中间件，只在内网用

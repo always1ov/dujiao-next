@@ -1,0 +1,1 @@
+const t=(a,e,n="orderDetail")=>{if(!e)return"-";const l=`${n}.fulfillmentTypes`;return{manual:a(`${l}.manual`),auto:a(`${l}.auto`),upstream:a(`${l}.manual`)}[e]||e},u=(a,e,n="orderDetail")=>{if(!e)return"-";const l=`${n}.fulfillmentStatuses`;return{pending:a(`${l}.pending`),delivered:a(`${l}.delivered`)}[e]||e};export{u as a,t as f};

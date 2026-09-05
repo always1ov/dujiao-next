@@ -1,0 +1,1 @@
+import{_ as o}from"./VaultProductListItem.vue_vue_type_script_setup_true_lang-Ccy2n0Wb.js";import"./vendor-vue-i18n-tQhtYk3n.js";import"./index-C4Ei-8eq.js";import"./useProduct-FeQeErbc.js";import"./money-CmSYA0w3.js";import"./package-CH1tPfta.js";import"./chevron-right-GdDDc8ks.js";import"./circle-x--YXo9j4p.js";import"./alarm-clock-DTcLeVoB.js";export{o as default};
