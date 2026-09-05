@@ -17,8 +17,9 @@
 | `deploy` | 本分支 | 孤儿分支，只有部署文件 |
 
 默认用官方预构建镜像，不从源码构建。`custom` 上的改动（含去品牌）不会自动进入部署：
-官方镜像里访客仍会看到上游品牌。要上线 `custom` 的版本，按它的 `CUSTOM.md` 自建镜像后，
-把 `IMAGE_REPO` / `IMAGE_TAG` 改成自建镜像的地址和 tag 再 Redeploy。
+官方镜像里访客仍会看到上游品牌。`custom` 每次 push 都会由 GitHub Actions 自动构建镜像推到
+`ghcr.io/always1ov/shop`（tag `custom` 为最新，`custom-<提交号>` 固定）。要上线它，Environment 改成
+`IMAGE_REPO=ghcr.io/always1ov/shop`、`IMAGE_TAG=custom` 再 Redeploy；细节见 `custom` 分支的 `CUSTOM.md`。
 
 ## 1. 这是什么
 
