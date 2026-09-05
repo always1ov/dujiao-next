@@ -42,6 +42,16 @@ func NewAdminHandler(releases ReleaseChecker) *AdminHandler {
 	}
 }
 
+// GetSystemVersion 返回当前运行版本。
+// 版本号不再随公开配置下发给访客，只有登录后台才能读到。
+// GET /api/v1/admin/system/version
+func (h *AdminHandler) GetSystemVersion(c *gin.Context) {
+	response.Success(c, gin.H{
+		"version":    version.Version,
+		"build_type": version.BuildType,
+	})
+}
+
 // CheckSystemUpdate 通过 GitHub Releases API 检测是否有新版本发布
 // GET /api/v1/admin/system/version/check
 func (h *AdminHandler) CheckSystemUpdate(c *gin.Context) {

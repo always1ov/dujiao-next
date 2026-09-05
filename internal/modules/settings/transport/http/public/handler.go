@@ -11,7 +11,6 @@ import (
 	reseller "github.com/dujiao-next/internal/modules/reseller/contract"
 	"github.com/dujiao-next/internal/platform/http/response"
 	"github.com/dujiao-next/internal/shared/jsonmap"
-	"github.com/dujiao-next/internal/version"
 
 	"github.com/gin-gonic/gin"
 )
@@ -130,8 +129,8 @@ func (h *Handler) GetConfig(c *gin.Context) {
 		constants.SettingFieldSiteCurrency:       constants.SiteCurrencyDefault,
 		constants.SettingFieldStorefrontTemplate: constants.StorefrontTemplateDefault,
 		"contact": map[string]interface{}{
-			"telegram": "https://telegram.me/dujiaoka",
-			"whatsapp": "https://wa.me/1234567890",
+			"telegram": "",
+			"whatsapp": "",
 		},
 		"scripts": make([]interface{}, 0),
 	}
@@ -142,7 +141,6 @@ func (h *Handler) GetConfig(c *gin.Context) {
 	var cached map[string]interface{}
 	if hit, err := h.cache.GetJSON(c.Request.Context(), cacheKey, &cached); err == nil && hit {
 		cached["server_time"] = time.Now().UnixMilli()
-		cached["app_version"] = version.Version
 		response.Success(c, cached)
 		return
 	}
@@ -239,7 +237,6 @@ func (h *Handler) GetConfig(c *gin.Context) {
 
 	_ = h.cache.SetJSON(c.Request.Context(), cacheKey, data, publicConfigCacheTTL)
 	data["server_time"] = time.Now().UnixMilli()
-	data["app_version"] = version.Version
 	response.Success(c, data)
 }
 

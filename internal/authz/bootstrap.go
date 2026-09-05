@@ -26,6 +26,7 @@ func BuiltinRoleSeeds() []RoleSeed {
 				{Object: "/admin/compliance/status", Action: "GET"},
 				{Object: "/admin/authz/me", Action: "GET"},
 				{Object: "/admin/2fa/status", Action: "GET"},
+				{Object: "/admin/system/version", Action: "GET"}, // 后台页脚显示当前版本，所有管理员可读
 				{Object: "/admin/ads/render/:slotCode", Action: "GET"},
 				{Object: "/admin/password", Action: "PUT"},                       // 所有管理员均可修改自己密码
 				{Object: "/admin/ads/impression", Action: "POST"},                // 广告曝光埋点，所有管理员可触发
