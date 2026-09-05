@@ -28,11 +28,11 @@ const terms: Record<LegalLocale, string> = {
 <li>人工交付商品由本站在承诺时间内处理，请留意订单状态与邮件通知。</li>
 <li>交付内容仅对下单人可见，请勿转发或公开。</li>
 </ul>
-<h2>五、退款与售后</h2>
+<h2>五、不支持售后</h2>
 <ul>
-<li>虚拟商品一经交付不支持无理由退款。</li>
-<li>若交付内容无法使用、与描述不符或未收到货，请在下单后 7 天内携订单号联系我们，核实后予以补发或退款。</li>
-<li>已使用、已绑定或因你自身操作导致失效的商品，不在售后范围内。</li>
+<li>虚拟商品可复制、不可收回，一经交付即视为交易完成，不支持退款、退换或撤销。</li>
+<li>下单前请仔细阅读商品说明、适用范围与使用条件。因未看清说明、自身账号问题或使用不当造成的损失，本站不承担责任。</li>
+<li>唯一例外是付款成功但订单长时间未交付，请携订单号联系我们核实处理。</li>
 </ul>
 <h2>六、禁止行为</h2>
 <p>不得使用非法资金支付、恶意拒付或退单、利用系统漏洞下单、批量占用库存，或将商品用于任何违法用途。发现上述行为，本站有权取消订单、冻结账户并保留追责权利。</p>
@@ -63,11 +63,11 @@ const terms: Record<LegalLocale, string> = {
 <li>人工交付商品由本站在承諾時間內處理，請留意訂單狀態與郵件通知。</li>
 <li>交付內容僅對下單人可見，請勿轉發或公開。</li>
 </ul>
-<h2>五、退款與售後</h2>
+<h2>五、不支援售後</h2>
 <ul>
-<li>虛擬商品一經交付不支援無理由退款。</li>
-<li>若交付內容無法使用、與描述不符或未收到貨，請在下單後 7 天內攜訂單號聯絡我們，核實後予以補發或退款。</li>
-<li>已使用、已綁定或因你自身操作導致失效的商品，不在售後範圍內。</li>
+<li>虛擬商品可複製、不可收回，一經交付即視為交易完成，不支援退款、退換或撤銷。</li>
+<li>下單前請仔細閱讀商品說明、適用範圍與使用條件。因未看清說明、自身帳號問題或使用不當造成的損失，本站不承擔責任。</li>
+<li>唯一例外是付款成功但訂單長時間未交付，請攜訂單號聯絡我們核實處理。</li>
 </ul>
 <h2>六、禁止行為</h2>
 <p>不得使用非法資金付款、惡意拒付或退單、利用系統漏洞下單、批量占用庫存，或將商品用於任何違法用途。發現上述行為，本站有權取消訂單、凍結帳戶並保留追責權利。</p>
@@ -98,11 +98,11 @@ const terms: Record<LegalLocale, string> = {
 <li>Manually delivered goods are handled within the promised time; watch the order status and your inbox.</li>
 <li>Delivery content is visible only to the buyer. Do not share or publish it.</li>
 </ul>
-<h2>5. Refunds and after-sales</h2>
+<h2>5. No after-sales service</h2>
 <ul>
-<li>Delivered virtual goods cannot be returned for a change of mind.</li>
-<li>If the delivered content does not work, does not match the description, or never arrived, contact us within 7 days of ordering with your order number. After verification we will resend or refund.</li>
-<li>Goods that have been used, bound to an account, or invalidated by your own actions are not covered.</li>
+<li>Virtual goods can be copied and cannot be taken back. Once delivered, the transaction is complete: no refunds, exchanges or cancellations.</li>
+<li>Read the product description, scope and conditions of use carefully before ordering. We are not liable for losses caused by not reading the description, problems with your own accounts, or misuse.</li>
+<li>The only exception is an order that was paid but not delivered for an extended period. Contact us with your order number and we will look into it.</li>
 </ul>
 <h2>6. Prohibited conduct</h2>
 <p>Do not pay with illegally obtained funds, file abusive chargebacks, exploit bugs to place orders, hoard stock in bulk, or use the goods for any unlawful purpose. We may cancel orders, freeze accounts and pursue further action where such conduct is found.</p>
@@ -128,7 +128,7 @@ const privacy: Record<LegalLocale, string> = {
 <h2>二、信息的用途</h2>
 <ul>
 <li>完成订单、交付商品、发送订单与交付通知。</li>
-<li>处理售后与退款请求。</li>
+<li>处理订单咨询与交付问题。</li>
 <li>防范欺诈、恶意下单与滥用行为。</li>
 <li>改进本站的功能与体验。</li>
 </ul>
@@ -142,7 +142,7 @@ const privacy: Record<LegalLocale, string> = {
 <li>法律法规要求，或有权机关依法要求。</li>
 </ul>
 <h2>五、信息保存</h2>
-<p>订单与交付记录在履行售后与财务义务所需的期限内保存。账户信息在账户存续期间保存，注销后依法删除或匿名化。</p>
+<p>订单与交付记录在履行交付、对账与财务义务所需的期限内保存。账户信息在账户存续期间保存，注销后依法删除或匿名化。</p>
 <h2>六、你的权利</h2>
 <p>你可以随时登录账户查看和修改个人资料。如需删除账户或导出你的数据，请通过页脚的联系方式与我们联系，我们会在核实身份后处理。</p>
 <h2>七、信息安全</h2>
@@ -164,7 +164,7 @@ const privacy: Record<LegalLocale, string> = {
 <h2>二、資訊的用途</h2>
 <ul>
 <li>完成訂單、交付商品、寄送訂單與交付通知。</li>
-<li>處理售後與退款請求。</li>
+<li>處理訂單諮詢與交付問題。</li>
 <li>防範詐欺、惡意下單與濫用行為。</li>
 <li>改進本站的功能與體驗。</li>
 </ul>
@@ -178,7 +178,7 @@ const privacy: Record<LegalLocale, string> = {
 <li>法律法規要求，或有權機關依法要求。</li>
 </ul>
 <h2>五、資訊保存</h2>
-<p>訂單與交付紀錄在履行售後與財務義務所需的期限內保存。帳戶資訊在帳戶存續期間保存，註銷後依法刪除或匿名化。</p>
+<p>訂單與交付紀錄在履行交付、對帳與財務義務所需的期限內保存。帳戶資訊在帳戶存續期間保存，註銷後依法刪除或匿名化。</p>
 <h2>六、你的權利</h2>
 <p>你可以隨時登入帳戶查看和修改個人資料。如需刪除帳戶或匯出你的資料，請透過頁尾的聯絡方式與我們聯絡，我們會在核實身分後處理。</p>
 <h2>七、資訊安全</h2>
@@ -200,7 +200,7 @@ const privacy: Record<LegalLocale, string> = {
 <h2>2. How we use it</h2>
 <ul>
 <li>To process orders, deliver goods and send order and delivery notifications.</li>
-<li>To handle after-sales and refund requests.</li>
+<li>To answer order enquiries and resolve delivery problems.</li>
 <li>To prevent fraud, abusive ordering and misuse.</li>
 <li>To improve the Site's features and experience.</li>
 </ul>
@@ -214,7 +214,7 @@ const privacy: Record<LegalLocale, string> = {
 <li>where required by law or a lawful request from an authority.</li>
 </ul>
 <h2>5. Retention</h2>
-<p>Order and delivery records are kept for as long as needed to meet after-sales and accounting obligations. Account data is kept while the account exists and deleted or anonymised after closure as the law allows.</p>
+<p>Order and delivery records are kept for as long as needed to meet delivery, reconciliation and accounting obligations. Account data is kept while the account exists and deleted or anonymised after closure as the law allows.</p>
 <h2>6. Your rights</h2>
 <p>You can view and edit your profile at any time by signing in. To delete your account or export your data, contact us through the footer; we will act after verifying your identity.</p>
 <h2>7. Security</h2>
