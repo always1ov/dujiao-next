@@ -318,14 +318,16 @@ func normalizeStorefrontTemplate(raw interface{}) string {
 }
 
 func normalizeNavConfig(value map[string]interface{}) jsonmap.JSON {
-	// builtin: blog / notice / about 开关，默认 true
+	// builtin: blog / notice / about / personal_center 开关，默认 true。
+	// personal_center 只控制未登录访客看到的入口（页脚、手机底栏），已登录用户始终能进个人中心。
 	builtin := map[string]interface{}{
-		"blog":   true,
-		"notice": true,
-		"about":  true,
+		"blog":            true,
+		"notice":          true,
+		"about":           true,
+		"personal_center": true,
 	}
 	if builtinRaw, ok := value["builtin"].(map[string]interface{}); ok {
-		for _, key := range []string{"blog", "notice", "about"} {
+		for _, key := range []string{"blog", "notice", "about", "personal_center"} {
 			if raw, exists := builtinRaw[key]; exists {
 				builtin[key] = parseSettingBool(raw)
 			}

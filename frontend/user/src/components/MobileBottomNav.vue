@@ -35,6 +35,7 @@ import { useI18n } from 'vue-i18n'
 import { Home, LayoutGrid, ShoppingCart, User } from 'lucide-vue-next'
 import { useCartStore } from '../stores/cart'
 import { useUserAuthStore } from '../stores/userAuth'
+import { useNavConfig } from '../composables/useNavConfig'
 import { useAppStore } from '../stores/app'
 
 const route = useRoute()
@@ -42,6 +43,7 @@ const { t } = useI18n()
 const cartStore = useCartStore()
 const userAuthStore = useUserAuthStore()
 const appStore = useAppStore()
+const { personalCenterEnabled } = useNavConfig()
 
 const cartCount = computed(() => cartStore.totalItems)
 const isListMode = computed(() => appStore.config?.template_mode === 'list')
@@ -51,7 +53,9 @@ const navItems = computed(() => {
     { path: '/', icon: 'home', label: 'bottomNav.home' },
     ...(!isListMode.value ? [{ path: '/products', icon: 'products', label: 'bottomNav.products' }] : []),
     { path: '/cart', icon: 'cart', label: 'bottomNav.cart' },
-    { path: userAuthStore.isAuthenticated ? '/me' : '/auth/login', icon: 'me', label: 'bottomNav.me' },
+    ...(personalCenterEnabled.value || userAuthStore.isAuthenticated
+      ? [{ path: userAuthStore.isAuthenticated ? '/me' : '/auth/login', icon: 'me', label: 'bottomNav.me' }]
+      : []),
   ]
   return items
 })

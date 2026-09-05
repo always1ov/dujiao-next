@@ -86,6 +86,8 @@ export const useNavConfig = () => {
     const blogEnabled = computed(() => navConfig.value?.builtin?.blog !== false)
     const noticeEnabled = computed(() => navConfig.value?.builtin?.notice !== false)
     const aboutEnabled = computed(() => navConfig.value?.builtin?.about !== false)
+    // 只影响未登录访客看到的个人中心入口；已登录用户始终显示
+    const personalCenterEnabled = computed(() => navConfig.value?.builtin?.personal_center !== false)
 
     /** 内置导航项（博客 / 公告 / 关于），受后台开关控制 */
     const builtinNavItems = computed<NavItem[]>(() => {
@@ -144,6 +146,7 @@ export const useNavConfig = () => {
         blogEnabled,
         noticeEnabled,
         aboutEnabled,
+        personalCenterEnabled,
         builtinNavItems,
         customNavItems,
         primaryNavItems,

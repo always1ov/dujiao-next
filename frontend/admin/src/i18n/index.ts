@@ -2856,6 +2856,8 @@ const messages = {
           builtin: {
             title: '内置导航项',
             subtitle: '首页始终显示，商品中心由模板模式控制',
+            personalCenter: '个人中心',
+            personalCenterHint: '关闭后页脚和手机底栏不再向未登录访客显示个人中心入口，已登录用户仍可从右上角进入',
             blog: '博客',
             notice: '公告',
             about: '关于',
@@ -7299,6 +7301,8 @@ const messages = {
           builtin: {
             title: '內建導航項',
             subtitle: '首頁始終顯示，商品中心由模板模式控制',
+            personalCenter: '個人中心',
+            personalCenterHint: '關閉後頁尾和手機底欄不再向未登入訪客顯示個人中心入口，已登入用戶仍可從右上角進入',
             blog: '部落格',
             notice: '公告',
             about: '關於',
@@ -11742,6 +11746,8 @@ const messages = {
           builtin: {
             title: 'Built-in Navigation Items',
             subtitle: 'Home is always visible. Products is controlled by template mode.',
+            personalCenter: 'Personal center',
+            personalCenterHint: 'When off, the footer and mobile bottom bar stop showing the personal center entry to visitors who are not signed in. Signed-in users can still open it from the top-right corner.',
             blog: 'Blog',
             notice: 'Notice',
             about: 'About',

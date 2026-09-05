@@ -59,6 +59,7 @@ const form = reactive({
     blog: true,
     notice: true,
     about: true,
+    personal_center: true,
   },
   customItems: [] as CustomNavItem[],
 })
@@ -94,6 +95,7 @@ const fetchNavConfig = async () => {
         form.builtin.blog = b.blog !== false
         form.builtin.notice = b.notice !== false
         form.builtin.about = b.about !== false
+        form.builtin.personal_center = b.personal_center !== false
       }
       if (Array.isArray(d.custom_items)) {
         form.customItems = (d.custom_items as Array<Record<string, unknown>>).map((item) => ({
@@ -175,6 +177,13 @@ defineExpose({ save, submitting })
         <div class="flex items-center justify-between py-4">
           <Label class="text-sm font-medium">{{ t('admin.settings.navigation.builtin.about') }}</Label>
           <Switch v-model="form.builtin.about" />
+        </div>
+        <div class="flex items-center justify-between gap-6 py-4">
+          <div>
+            <Label class="text-sm font-medium">{{ t('admin.settings.navigation.builtin.personalCenter') }}</Label>
+            <p class="mt-1 text-xs text-muted-foreground">{{ t('admin.settings.navigation.builtin.personalCenterHint') }}</p>
+          </div>
+          <Switch v-model="form.builtin.personal_center" />
         </div>
       </div>
     </div>
