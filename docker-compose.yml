@@ -1,0 +1,132 @@
+# Dujiao-Next：官方单容器全栈镜像 + 独立 Redis。
+# 所有环境相关的值都来自 Dokploy Environment（见 env.example），本文件不含任何真值。
+
+services:
+  dujiao-next:
+    # 官方预构建镜像（Docker Hub dujiaonext/dujiao-next，amd64 / arm64），不从源码构建
+    image: dujiaonext/dujiao-next:${IMAGE_TAG}
+    container_name: ${APP_NAME}
+    # 镜像没有 USER 指令本来就是 root；显式写出来，bind mount 目录不需要提前 chown
+    user: "0:0"
+    restart: unless-stopped
+    pull_policy: always
+    depends_on:
+      - redis
+    environment:
+      - TZ=Asia/Shanghai
+      - HTTP_PROXY=${PROXY_URL}
+      - HTTPS_PROXY=${PROXY_URL}
+      - NO_PROXY=${NO_PROXY_LIST}
+      # 下面的变量名 = config.yml 的键路径把 . 换成 _ 后大写，优先级高于配置文件。
+      # 镜像里没有 config.yml，运行时配置完全由环境变量 + 程序内置默认值决定。
+      # release：Gin 生产模式；弱密钥、默认后台路径会从"警告"升级为"拒绝启动"
+      - SERVER_MODE=release
+      - SERVER_HOST=0.0.0.0
+      - SERVER_PORT=8080
+      # 只信任 Traefik 所在网段送来的 X-Forwarded-For；填错时限流和审计记录的全是网关 IP
+      - SERVER_TRUSTED_PROXIES=${TRUSTED_PROXIES}
+      - APP_SECRET_KEY=${APP_SECRET_KEY}
+      - JWT_SECRET=${JWT_SECRET}
+      - USER_JWT_SECRET=${USER_JWT_SECRET}
+      - WEB_ADMIN_PATH=${ADMIN_PATH}
+      # SQLite 单文件落在 /app/db 挂载目录；换 PostgreSQL 见 README
+      - DATABASE_DRIVER=sqlite
+      - DATABASE_DSN=./db/dujiao.db
+      # 缓存与异步队列共用同一个 Redis，沿用官方默认的 db 0 / db 1 划分
+      - REDIS_ENABLED=true
+      - REDIS_HOST=${APP_NAME}-redis
+      - REDIS_PORT=6379
+      - REDIS_PASSWORD=${REDIS_PASSWORD}
+      - REDIS_DB=0
+      - QUEUE_ENABLED=true
+      - QUEUE_HOST=${APP_NAME}-redis
+      - QUEUE_PORT=6379
+      - QUEUE_PASSWORD=${REDIS_PASSWORD}
+      - QUEUE_DB=1
+      # 只在管理员表为空时创建超级管理员；建号登录后可把 ADMIN_PASSWORD 清空
+      - DJ_DEFAULT_ADMIN_USERNAME=${ADMIN_USERNAME}
+      - DJ_DEFAULT_ADMIN_PASSWORD=${ADMIN_PASSWORD}
+    volumes:
+      - ../files/dujiao-next/db:/app/db
+      - ../files/dujiao-next/uploads:/app/uploads
+      - ../files/dujiao-next/logs:/app/logs
+    healthcheck:
+      # 运行时镜像是 alpine，busybox 自带 wget；/health 是官方健康检查端点
+      test: ["CMD", "wget", "-q", "-O", "/dev/null", "-T", "5", "http://127.0.0.1:8080/health"]
+      interval: 15s
+      timeout: 5s
+      retries: 3
+      start_period: 90s
+    logging:
+      driver: json-file
+      options:
+        max-size: 10m
+        max-file: "3"
+    # 交互式服务保持默认权重；Go 进程常驻约 100M，上限留给 4096x4096 图片上传解码的峰值
+    cpu_shares: 1024
+    deploy:
+      resources:
+        limits:
+          memory: 768M
+    networks:
+      - traefik-net
+      - redis-net
+    labels:
+      - com.centurylinklabs.watchtower.enable=false
+      - traefik.enable=true
+      - traefik.docker.network=traefik-net
+      - traefik.http.services.${APP_NAME}.loadbalancer.server.port=8080
+      # 内网 HTTPS
+      - traefik.http.routers.${APP_NAME}-lan.rule=Host(`${APP_DOMAIN}`)
+      - traefik.http.routers.${APP_NAME}-lan.entrypoints=websecure
+      - traefik.http.routers.${APP_NAME}-lan.tls.certresolver=cloudflare
+      - traefik.http.routers.${APP_NAME}-lan.middlewares=web-default@docker
+      - traefik.http.routers.${APP_NAME}-lan.service=${APP_NAME}
+      # 隧道入口：商城页面、支付回调、上游对接 API 都必须匿名可达，这条不挂统一登录
+      - traefik.http.routers.${APP_NAME}-cf.rule=Host(`${APP_DOMAIN}`)
+      - traefik.http.routers.${APP_NAME}-cf.entrypoints=web-cf
+      - traefik.http.routers.${APP_NAME}-cf.priority=1
+      - traefik.http.routers.${APP_NAME}-cf.middlewares=web-default@docker
+      - traefik.http.routers.${APP_NAME}-cf.service=${APP_NAME}
+      # 隧道入口的后台页面额外套一层统一登录；后台 API 在 /api 下，不受影响
+      - "traefik.http.routers.${APP_NAME}-admin-cf.rule=Host(`${APP_DOMAIN}`) && PathPrefix(`${ADMIN_PATH}`)"
+      - traefik.http.routers.${APP_NAME}-admin-cf.entrypoints=web-cf
+      - traefik.http.routers.${APP_NAME}-admin-cf.priority=100
+      - traefik.http.routers.${APP_NAME}-admin-cf.middlewares=web-default@docker,tinyauth@docker
+      - traefik.http.routers.${APP_NAME}-admin-cf.service=${APP_NAME}
+
+  redis:
+    image: redis:${REDIS_IMAGE_TAG}
+    container_name: ${APP_NAME}-redis
+    # 官方入口脚本以 root 启动时会先 chown /data 再降权到 redis 用户，bind mount 不用手动改属主
+    user: "0:0"
+    restart: unless-stopped
+    pull_policy: always
+    # AOF 让队列里还没执行的任务（发货通知、上游库存同步）在重启后不丢
+    command: ["redis-server", "--appendonly", "yes", "--requirepass", "${REDIS_PASSWORD}"]
+    environment:
+      - TZ=Asia/Shanghai
+    volumes:
+      - ../files/redis/data:/data
+    logging:
+      driver: json-file
+      options:
+        max-size: 10m
+        max-file: "3"
+    deploy:
+      resources:
+        limits:
+          memory: 256M
+    # 只挂项目内部网络，不进 traefik-net，其他项目的容器碰不到它
+    networks:
+      - redis-net
+    labels:
+      - com.centurylinklabs.watchtower.enable=false
+      - traefik.enable=false
+
+networks:
+  traefik-net:
+    external: true
+  # 仅供应用与 Redis 互连；internal 表示这张网没有出网网关
+  redis-net:
+    internal: true
