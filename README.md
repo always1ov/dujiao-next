@@ -44,7 +44,8 @@ Dujiao-Next 是数字商品（卡密 / 虚拟物品）自动发货商城：Go �
 
 ## 3. 前置条件
 
-- Traefik 外部网络 `traefik-net` 和中间件 `web-default@docker`、`tinyauth@docker` 已存在
+- Traefik 外部网络 `traefik-net` 已存在。本项目的中间件（压缩、安全头）在 compose labels 里自带，
+  不依赖网关上的公共中间件，两条路由都不挂 tinyauth
 - DNS：
   - 内网访问：灰云 A 记录 `APP_DOMAIN` → NAS 的内网 IP，走 `websecure`，证书由 `cloudflare` 解析器 DNS 挑战签发
   - 隧道访问：橙云 CNAME `APP_DOMAIN` → 隧道地址，并在 Zero Trust 加 Public Hostname 指向 Traefik 的 `web-cf` 入口
@@ -108,23 +109,24 @@ Redis 连接是惰性的：Redis 比应用晚几秒就绪只会留下几条连�
    数据库迁移只向前，升级前先备份 `db/`；回退到旧 tag 不保证能读新库
 3. **`TRUSTED_PROXIES` 填错** —— 所有访客 IP 都会被记成 Traefik 的容器 IP，登录限流（5 次 / 5 分钟，封 15 分钟）
    会把所有人一起封掉。症状：后台审计日志和订单里的 IP 全是同一个 `172.x`
-4. **隧道入口的后台路径挂了 tinyauth** —— 需要 tinyauth 的 cookie 域覆盖 `APP_DOMAIN`。不覆盖的表现是登录后无限跳转。
-   不想要这层：删掉 compose 里 `-admin-cf` 开头的 5 行 labels
-5. **支付回调必须匿名可达** —— 支付网关回调和 webhook 在 `/api/v1/...` 下，上游对接 API 在 `/api/v1/upstream/...`，
-   都走隧道那条不带 ForwardAuth 的路由。千万别给 `-cf` 路由加 `tinyauth`，否则支付页面「一直等待」、上游同步全部失败
-6. **Traefik 在容器 healthy 之前不转发** —— 每次 Redeploy 后约 15 秒内域名返回 404，正常。一直 404 就
+4. **支付回调必须匿名可达** —— 支付网关回调和 webhook 在 `/api/v1/...` 下，上游对接 API 在 `/api/v1/upstream/...`，
+   都走隧道那条路由。两条路由都没挂 tinyauth 或任何 ForwardAuth，以后也不要加，否则支付页面「一直等待」、上游同步全部失败。
+   后台靠应用自己的登录、2FA、登录限流和隐蔽的 `ADMIN_PATH` 保护
+5. **Traefik 在容器 healthy 之前不转发** —— 每次 Redeploy 后约 15 秒内域名返回 404，正常。一直 404 就
    `docker inspect dujiao-next --format '{{json .State.Health}}'` 看健康检查输出
-7. **安全头可能拦住第三方支付 / 登录组件** —— `web-default` 里的 CSP、X-Frame-Options 等如果影响 Stripe Elements、
-   PayPal 按钮、Telegram Login Widget、Google 登录弹窗，要用自带安全头的自定义中间件**替换** `web-default`，不能追加在链尾
-8. **经隧道拿不到真实 IP** —— Traefik 的 `web-cf` 入口需要在 `forwardedHeaders.trustedIPs` 里信任 cloudflared 的地址，
+6. **安全头与第三方组件** —— 中间件是本 compose 自带的 `-headers`（HSTS、nosniff、Referrer-Policy、X-Frame-Options SAMEORIGIN）
+   和 `-compress`，没有 CSP，Stripe / PayPal / Google 登录 / Turnstile 的外部脚本都不受影响。唯一会拦的是 SAMEORIGIN：
+   要在 Telegram 网页版里以 Mini App 打开商城（它用 iframe），把 `customFrameOptionsValue` 那行换成
+   `contentSecurityPolicy=frame-ancestors 'self' https://web.telegram.org`
+7. **经隧道拿不到真实 IP** —— Traefik 的 `web-cf` 入口需要在 `forwardedHeaders.trustedIPs` 里信任 cloudflared 的地址，
    否则应用记录的是 cloudflared 的 IP。这是 Traefik 侧配置，不在本 compose 里
-9. **改 `ADMIN_PATH` 要 Redeploy** —— labels 和环境变量都没有热加载；改完旧书签失效，后台 API 路径不变
-10. **iOS 上的 Google 登录依赖 Redis** —— Redis 挂了只有这一条流程失败，其他登录方式不受影响
-11. **`network dokploy-network declared as external, but could not be found`** —— Domains 页的自动记录没删干净时出现。
+8. **改 `ADMIN_PATH` 要 Redeploy** —— labels 和环境变量都没有热加载；改完旧书签失效，后台 API 路径不变
+9. **iOS 上的 Google 登录依赖 Redis** —— Redis 挂了只有这一条流程失败，其他登录方式不受影响
+10. **`network dokploy-network declared as external, but could not be found`** —— Domains 页的自动记录没删干净时出现。
     先删记录；急救用 `docker network create --driver bridge dokploy-network`
-12. **`HOST_IP` 绑定的地址必须在宿主机上真实存在** —— NAS 换了 IP 或用了 DHCP 新地址，容器会因 `bind: cannot assign requested address`
+11. **`HOST_IP` 绑定的地址必须在宿主机上真实存在** —— NAS 换了 IP 或用了 DHCP 新地址，容器会因 `bind: cannot assign requested address`
     起不来。症状是 Traefik 也一起 404，因为容器根本没启动；改 `HOST_IP` 再 Redeploy
-13. **运维子命令在同一个二进制里**：
+12. **运维子命令在同一个二进制里**：
 
     ```bash
     docker exec -it dujiao-next ./dujiao-next admin list-admins
@@ -136,13 +138,14 @@ Redis 连接是惰性的：Redis 比应用晚几秒就绪只会留下几条连�
 
 逐条列出你可能想改的决定和改法：
 
-1. **Redis 用伴生容器，不接共享实例。** 已有 Redis 的话：删掉 `redis` 服务和 `redis-net`，
+1. **Redis 用伴生容器，和应用一样只挂 `traefik-net`，靠密码隔离。** 已有 Redis 的话：删掉 `redis` 服务，
    把 `REDIS_HOST` / `QUEUE_HOST` 改成现有容器名、`REDIS_PASSWORD` 改成它的密码。需要 Redis 7 以上（iOS Google 登录用 `GETDEL`）
 2. **SQLite，不用 PostgreSQL。** 要换：`DATABASE_DRIVER=postgres`、`DATABASE_DSN=host=<容器名> user=… password=… dbname=… sslmode=disable`，
    再加 `DATABASE_POOL_MAX_OPEN_CONNS=10`（SQLite 固定为 1）
-3. **隧道入口整站公开，只给后台页面加 tinyauth。** 商城是给公众用的，支付回调也要匿名可达，所以主路由不能挂统一登录。
-   完全不用 tinyauth：删 `-admin-cf` 的 5 行。想让内网入口的后台也限内网段：另拆一条 `-admin-lan` 路由加 `internal-only@docker`，
-   不要直接加在 `-lan` 上（会把商城一起限掉）
+3. **两条路由都不挂 tinyauth，中间件用 compose 自带的 `-headers` + `-compress`。** 商城给公众用，支付回调也要匿名可达，
+   统一登录会把顾客和支付网关一起挡在外面。不用网关的 `web-default@docker`，因为它的 secure-headers 策略对商店不可控；
+   不用 `retry-middleware@docker`，因为下单和支付的 POST 不幂等，重试会重复下单。
+   想换回 `web-default@docker`：把两条 router 的 `middlewares` 标签改成它，并删掉 6 行 `middlewares.${APP_NAME}-*` 定义
 4. **纯环境变量，不挂 `config.yml`。** 冷门配置项按「`节_键` 大写」规则加环境变量，例如
    `CAPTCHA_PROVIDER=turnstile`、`CAPTCHA_TURNSTILE_SITE_KEY=…`、`UPLOAD_MAX_SIZE=20971520`、`CORS_ALLOWED_ORIGINS=a.com,b.com`（列表用逗号）。
    一定要用文件：放到 `../files/dujiao-next/config/config.yml`，挂到 `/app/config.yml:ro`。环境变量仍然优先；

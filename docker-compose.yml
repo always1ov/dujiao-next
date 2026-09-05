@@ -73,30 +73,30 @@ services:
           memory: 768M
     networks:
       - traefik-net
-      - redis-net
     labels:
       - com.centurylinklabs.watchtower.enable=false
       - traefik.enable=true
       - traefik.docker.network=traefik-net
       - traefik.http.services.${APP_NAME}.loadbalancer.server.port=8080
+      # 商店专用中间件：只做压缩和不影响第三方支付 / 登录组件的保守安全头（无 CSP）。
+      # 不用网关的 web-default（其 secure-headers 的策略对商店不可控）、不用 retry（下单和支付的 POST 不幂等）、不挂 tinyauth
+      - traefik.http.middlewares.${APP_NAME}-headers.headers.stsSeconds=31536000
+      - traefik.http.middlewares.${APP_NAME}-headers.headers.contentTypeNosniff=true
+      - traefik.http.middlewares.${APP_NAME}-headers.headers.referrerPolicy=strict-origin-when-cross-origin
+      - traefik.http.middlewares.${APP_NAME}-headers.headers.customFrameOptionsValue=SAMEORIGIN
+      - traefik.http.middlewares.${APP_NAME}-compress.compress=true
+      - traefik.http.middlewares.${APP_NAME}-compress.compress.excludedContentTypes=image/jpeg,image/png,image/gif,image/webp
       # 内网 HTTPS
       - traefik.http.routers.${APP_NAME}-lan.rule=Host(`${APP_DOMAIN}`)
       - traefik.http.routers.${APP_NAME}-lan.entrypoints=websecure
       - traefik.http.routers.${APP_NAME}-lan.tls.certresolver=cloudflare
-      - traefik.http.routers.${APP_NAME}-lan.middlewares=web-default@docker
+      - traefik.http.routers.${APP_NAME}-lan.middlewares=${APP_NAME}-headers,${APP_NAME}-compress
       - traefik.http.routers.${APP_NAME}-lan.service=${APP_NAME}
-      # 隧道入口：商城页面、支付回调、上游对接 API 都必须匿名可达，这条不挂统一登录
+      # 隧道入口：整站公开。商城页面、支付回调、上游对接 API 都必须匿名可达
       - traefik.http.routers.${APP_NAME}-cf.rule=Host(`${APP_DOMAIN}`)
       - traefik.http.routers.${APP_NAME}-cf.entrypoints=web-cf
-      - traefik.http.routers.${APP_NAME}-cf.priority=1
-      - traefik.http.routers.${APP_NAME}-cf.middlewares=web-default@docker
+      - traefik.http.routers.${APP_NAME}-cf.middlewares=${APP_NAME}-headers,${APP_NAME}-compress
       - traefik.http.routers.${APP_NAME}-cf.service=${APP_NAME}
-      # 隧道入口的后台页面额外套一层统一登录；后台 API 在 /api 下，不受影响
-      - "traefik.http.routers.${APP_NAME}-admin-cf.rule=Host(`${APP_DOMAIN}`) && PathPrefix(`${ADMIN_PATH}`)"
-      - traefik.http.routers.${APP_NAME}-admin-cf.entrypoints=web-cf
-      - traefik.http.routers.${APP_NAME}-admin-cf.priority=100
-      - traefik.http.routers.${APP_NAME}-admin-cf.middlewares=web-default@docker,tinyauth@docker
-      - traefik.http.routers.${APP_NAME}-admin-cf.service=${APP_NAME}
 
   redis:
     image: redis:${REDIS_IMAGE_TAG}
@@ -120,9 +120,9 @@ services:
       resources:
         limits:
           memory: 256M
-    # 只挂项目内部网络，不进 traefik-net，其他项目的容器碰不到它
+    # 同在 traefik-net 上但不暴露路由；同网段其他容器能连到端口，靠 requirepass 挡
     networks:
-      - redis-net
+      - traefik-net
     labels:
       - com.centurylinklabs.watchtower.enable=false
       - traefik.enable=false
@@ -130,6 +130,3 @@ services:
 networks:
   traefik-net:
     external: true
-  # 仅供应用与 Redis 互连；internal 表示这张网没有出网网关
-  redis-net:
-    internal: true
