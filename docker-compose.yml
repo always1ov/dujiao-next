@@ -50,6 +50,9 @@ services:
       - ../files/dujiao-next/db:/app/db
       - ../files/dujiao-next/uploads:/app/uploads
       - ../files/dujiao-next/logs:/app/logs
+    # 抢救通道：不经 DNS 和 Traefik 直连。只绑宿主机内网 IP，不绑 0.0.0.0
+    ports:
+      - "${HOST_IP}:${HOST_PORT}:8080"
     healthcheck:
       # 运行时镜像是 alpine，busybox 自带 wget；/health 是官方健康检查端点
       test: ["CMD", "wget", "-q", "-O", "/dev/null", "-T", "5", "http://127.0.0.1:8080/health"]

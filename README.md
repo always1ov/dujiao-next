@@ -8,7 +8,15 @@
 | `env.example` | 全部变量，值是格式正确的假值；整段粘进 Dokploy Environment 后改真值 |
 | `README.md` | 本文 |
 
-源码在 `main`（与上游 `dujiao-next/dujiao-next` 同步，一行不改）。部署用的是官方预构建镜像，本分支不参与构建。
+仓库一共三个分支：
+
+| 分支 | 作用 | 规则 |
+| --- | --- | --- |
+| `main` | 上游 `dujiao-next/dujiao-next` 的镜像 | 只快进同步上游，一行不改 |
+| `custom` | 自己改过的代码 | 从 `main` 分出，改动与同步命令记在该分支的 `CUSTOM.md` |
+| `deploy` | 本分支 | 孤儿分支，只有部署文件 |
+
+部署用的是官方预构建镜像，不从源码构建；`custom` 上的改动不会自动进入部署，要部署它们见 `CUSTOM.md`。
 
 ## 1. 这是什么
 
@@ -38,7 +46,7 @@ Dujiao-Next 是数字商品（卡密 / 虚拟物品）自动发货商城：Go �
 
 - Traefik 外部网络 `traefik-net` 和中间件 `web-default@docker`、`tinyauth@docker` 已存在
 - DNS：
-  - 内网访问：灰云 A 记录 `APP_DOMAIN` → 内网 IP，走 `websecure`，证书由 `cloudflare` 解析器 DNS 挑战签发
+  - 内网访问：灰云 A 记录 `APP_DOMAIN` → NAS 的内网 IP，走 `websecure`，证书由 `cloudflare` 解析器 DNS 挑战签发
   - 隧道访问：橙云 CNAME `APP_DOMAIN` → 隧道地址，并在 Zero Trust 加 Public Hostname 指向 Traefik 的 `web-cf` 入口
 - 宿主机执行下面的命令拿 `traefik-net` 的子网，填进 `TRUSTED_PROXIES`：
 
@@ -47,6 +55,7 @@ Dujiao-Next 是数字商品（卡密 / 虚拟物品）自动发货商城：Go �
   ```
 
 - 数据目录不用提前建：两个容器都以 root 启动，Docker 自动创建 `../files/...`
+- `HOST_IP` 填 NAS 的内网 IP，`HOST_PORT` 先用 `ss -tulnp | grep <HOST_PORT>` 确认没被占用
 
 ## 4. 首次启动会发生什么
 
@@ -70,6 +79,7 @@ Redis 连接是惰性的：Redis 比应用晚几秒就绪只会留下几条连�
   release 模式下应用日志只写文件不写 stdout，真正的日志在 `../files/dujiao-next/logs/app.log`
 - `docker ps` 里 `dujiao-next` 状态 `healthy`（启动后 90 秒内显示 `starting` 是正常的）
 - `curl -s https://<APP_DOMAIN>/health` 返回 `{"status":"ok"}`
+- 抢救通道：`curl -s http://<HOST_IP>:<HOST_PORT>/health` 也返回 `{"status":"ok"}`，说明不经 Traefik 也能通
 - 浏览器打开 `https://<APP_DOMAIN>/` 是商城首页，`https://<APP_DOMAIN><ADMIN_PATH>/` 是后台登录页
 - `../files/dujiao-next/db/dujiao.db` 存在；`../files/redis/data/` 下有 `appendonlydir/`
 - 内网那条路由的证书已签出（浏览器锁图标或 Traefik dashboard）
@@ -112,7 +122,9 @@ Redis 连接是惰性的：Redis 比应用晚几秒就绪只会留下几条连�
 10. **iOS 上的 Google 登录依赖 Redis** —— Redis 挂了只有这一条流程失败，其他登录方式不受影响
 11. **`network dokploy-network declared as external, but could not be found`** —— Domains 页的自动记录没删干净时出现。
     先删记录；急救用 `docker network create --driver bridge dokploy-network`
-12. **运维子命令在同一个二进制里**：
+12. **`HOST_IP` 绑定的地址必须在宿主机上真实存在** —— NAS 换了 IP 或用了 DHCP 新地址，容器会因 `bind: cannot assign requested address`
+    起不来。症状是 Traefik 也一起 404，因为容器根本没启动；改 `HOST_IP` 再 Redeploy
+13. **运维子命令在同一个二进制里**：
 
     ```bash
     docker exec -it dujiao-next ./dujiao-next admin list-admins
@@ -138,8 +150,8 @@ Redis 连接是惰性的：Redis 比应用晚几秒就绪只会留下几条连�
 5. **`IMAGE_TAG=v1.4.7`。** 依据：Docker Hub 上 `v1.4.7` 与 `latest` 同一时刻（2026-09-02）推送，上游 GitHub Release `v1.4.7` 非预发布。
    想自动跟进改成 `latest`
 6. **内存上限：应用 768M，Redis 256M。** Go 进程常驻约 100M，余量留给 4096×4096 图片解码。上传大图时容器以 137 退出就放宽应用的上限
-7. **没开宿主机端口映射。** 需要绕过 DNS 和 Traefik 的抢救通道：给 `dujiao-next` 加
-   `ports: ["${HOST_IP}:${HOST_PORT}:8080"]`，Environment 里加这两个变量（绑内网 IP，不要 `0.0.0.0`）
+7. **开了抢救通道端口映射**，绑 `HOST_IP:HOST_PORT`，不经 DNS 和 Traefik 直连。不想要：删掉 compose 的 `ports` 段和
+   Environment 里的 `HOST_IP`、`HOST_PORT`。注意它没有 HTTPS 也没有任何中间件，只在内网用
 8. **`APP_NAME=dujiao-next`**，容器名和 Traefik router / service 名都跟着它。同机部署第二套改这个值即可
 9. **`TZ=Asia/Shanghai`**，两个容器都写死
 10. **首个管理员用环境变量创建。** 不想让密码留在 Environment：登录后把 `ADMIN_PASSWORD` 清空再 Redeploy，
@@ -155,6 +167,7 @@ Redis 连接是惰性的：Redis 比应用晚几秒就绪只会留下几条连�
 3. 走隧道的在 Zero Trust 加 Public Hostname 指向 Traefik
 4. `docker network inspect traefik-net` 拿子网填 `TRUSTED_PROXIES`
 5. `openssl rand -hex 32` 跑三次填三把密钥，再跑一次填 `REDIS_PASSWORD`
+6. `HOST_IP` 填 NAS 内网 IP，`ss -tulnp` 确认 `HOST_PORT` 空闲
 
 ## 部署后
 
