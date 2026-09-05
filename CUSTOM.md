@@ -16,6 +16,8 @@
 | 日期 | 改了什么 | 为什么 | 涉及文件 | 提交 |
 | --- | --- | --- | --- | --- |
 | 2026-09-05 | 去除访客可见的上游品牌痕迹（详见下节） | 不让访客看出所用框架 | 前台、后台、Go 共 34 个文件 | `f7273e4` |
+| 2026-09-05 | 服务条款、隐私政策、关于页、页脚与首页的内置默认文案（虚拟商品不支持售后） | 后台留空也有像样的内容 | `frontend/user/src/content/legalDefaults.ts`、`useLegal.ts`、`useAbout.ts`、三个 locale JSON | `2ef2b3e`、`8a6aaba` |
+| 2026-09-05 | 导航配置新增「个人中心」开关，关闭后未登录访客看不到页脚和手机底栏的入口 | 游客店不想引导注册 | `site_normalize.go`、`SettingsNavigationTab.vue`、`useNavConfig.ts`、`VaultLayout.vue`、`MobileBottomNav.vue` | `edd2e47` |
 
 ## 去品牌改动说明
 
