@@ -37,14 +37,7 @@ export function useAbout() {
     return ''
   }
 
-  const heroTitle = computed(() => resolveLocalizedText(aboutConfig.value?.hero?.title))
-  const heroSubtitle = computed(() => resolveLocalizedText(aboutConfig.value?.hero?.subtitle))
-  const introductionText = computed(() => resolveLocalizedText(aboutConfig.value?.introduction))
-  const servicesTitle = computed(() => resolveLocalizedText(aboutConfig.value?.services?.title))
-  const contactTitle = computed(() => resolveLocalizedText(aboutConfig.value?.contact?.title))
-  const contactText = computed(() => resolveLocalizedText(aboutConfig.value?.contact?.text))
-
-  const serviceItems = computed(() => {
+  const configuredServiceItems = computed(() => {
     const raw = aboutConfig.value?.services?.items
     if (!Array.isArray(raw)) {
       return []
@@ -53,6 +46,39 @@ export function useAbout() {
     return raw
       .map((item) => resolveLocalizedText(item))
       .filter((item) => item !== '')
+  })
+
+  // 后台一个字都没填时才用内置默认文案；填了任意一项就完全以后台为准，方便站长有意隐藏某个区块
+  const aboutConfigured = computed(() => {
+    const about = aboutConfig.value
+    return (
+      resolveLocalizedText(about?.hero?.title) !== '' ||
+      resolveLocalizedText(about?.hero?.subtitle) !== '' ||
+      resolveLocalizedText(about?.introduction) !== '' ||
+      resolveLocalizedText(about?.services?.title) !== '' ||
+      resolveLocalizedText(about?.contact?.title) !== '' ||
+      resolveLocalizedText(about?.contact?.text) !== '' ||
+      configuredServiceItems.value.length > 0
+    )
+  })
+  const siteName = computed(() => String(appStore.config?.brand?.site_name || '').trim() || 'Store')
+  const withDefault = (raw: unknown, fallback: () => string) =>
+    aboutConfigured.value ? resolveLocalizedText(raw) : fallback()
+
+  const heroTitle = computed(() => withDefault(aboutConfig.value?.hero?.title, () => t('about.title')))
+  const heroSubtitle = computed(() =>
+    withDefault(aboutConfig.value?.hero?.subtitle, () => t('about.subtitle', { site: siteName.value })),
+  )
+  const introductionText = computed(() =>
+    withDefault(aboutConfig.value?.introduction, () => t('about.introduction', { site: siteName.value })),
+  )
+  const servicesTitle = computed(() => withDefault(aboutConfig.value?.services?.title, () => t('about.ourServices')))
+  const contactTitle = computed(() => withDefault(aboutConfig.value?.contact?.title, () => t('about.contactUs')))
+  const contactText = computed(() => withDefault(aboutConfig.value?.contact?.text, () => t('about.contactText')))
+
+  const serviceItems = computed(() => {
+    if (aboutConfigured.value) return configuredServiceItems.value
+    return [1, 2, 3, 4].map((index) => t(`about.service${index}`))
   })
 
   const hasIntroduction = computed(() => introductionText.value !== '')

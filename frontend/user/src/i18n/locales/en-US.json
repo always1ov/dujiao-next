@@ -96,7 +96,7 @@
     "label": "Checkout progress"
   },
   "footer": {
-    "description": "Professional online studio providing quality products and services.",
+    "description": "Self-service digital goods store. Keys, licenses and top-ups, auto-delivered on payment and visible only to you.",
     "quickLinks": "Quick Links",
     "contact": "Contact Us",
     "rights": "All rights reserved",
@@ -113,9 +113,9 @@
   "home": {
     "hero": {
       "title": "Curated Digital Goods",
-      "subtitle": "Professional Products and Services Provider",
+      "subtitle": "Auto-delivered the moment you pay, straight to your order page and inbox",
       "cta": "Browse Products",
-      "badge": "Next Gen Digital Store"
+      "badge": "Digital goods · Instant delivery"
     },
     "stats": {
       "activeUsers": "Active Users",
@@ -125,13 +125,13 @@
     },
     "featured": {
       "title": "Featured Products",
-      "description": "Discover our premium collection of digital assets, curated for excellence.",
+      "description": "Digital goods on sale right now, delivered automatically after payment.",
       "empty": "No products available",
       "viewAll": "View All Products"
     },
     "cta": {
-      "title": "Ready to Start?",
-      "description": "Join thousands of satisfied customers and elevate your digital experience today.",
+      "title": "Can't find what you need?",
+      "description": "Browse all products, or tell us what you are looking for via the contact options in the footer.",
       "button": "View All Products"
     },
     "latest": {
@@ -259,15 +259,15 @@
   },
   "about": {
     "title": "About Us",
-    "subtitle": "Learn about us",
-    "introduction": "We are a professional online studio dedicated to providing high-quality products and services to our customers. Innovation, professionalism, and efficiency are our core values, and we constantly pursue excellence to create value for our customers.",
-    "ourServices": "Our Services",
-    "service1": "Premium Product Recommendations & Sales",
-    "service2": "Professional Pre-sales Consulting",
-    "service3": "Responsive Customer Support",
-    "service4": "Regular Product Updates",
+    "subtitle": "About {site}",
+    "introduction": "{site} is a self-service store for digital goods: card keys, redemption codes, account licenses and top-ups. Every product is clearly priced and delivered automatically after payment, with your credentials sent straight to the order page and your inbox.",
+    "ourServices": "What we offer",
+    "service1": "Keys and redemption codes, auto-delivered seconds after payment",
+    "service2": "Account licenses and top-ups handled promptly per order",
+    "service3": "Guest checkout, with order lookup by email and order number",
+    "service4": "Problem orders resent or refunded after verification",
     "contactUs": "Contact Us",
-    "contactText": "If you have any questions about our products or services, please feel free to contact us via:"
+    "contactText": "Questions about an order or a product? Reach us through the options below and we will get back to you soon:"
   },
   "navbar": {
     "cart": "Cart",

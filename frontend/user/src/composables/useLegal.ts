@@ -2,6 +2,7 @@ import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useAppStore } from '../stores/app'
 import { usePageSeo } from './usePageSeo'
+import { getLegalDefault } from '../content/legalDefaults'
 
 /**
  * 条款/隐私页共享逻辑（classic + vault 双模板共用）。
@@ -26,17 +27,22 @@ export function useLegal(type: () => 'terms' | 'privacy') {
 
   const content = computed(() => {
     const config = appStore.config
-    if (!config?.legal) return ''
+    if (!config) return ''
 
     const legal = config.legal
     const lang = locale.value
 
-    if (type() === 'terms' && legal.terms) {
-      return legal.terms[lang] || ''
-    } else if (type() === 'privacy' && legal.privacy) {
-      return legal.privacy[lang] || ''
+    let custom = ''
+    if (type() === 'terms' && legal?.terms) {
+      custom = legal.terms[lang] || ''
+    } else if (type() === 'privacy' && legal?.privacy) {
+      custom = legal.privacy[lang] || ''
     }
-    return ''
+    if (custom.trim() !== '') return custom
+
+    // 后台没填时用内置默认文案，站点名取自站点设置
+    const siteName = String(config?.brand?.site_name || '').trim() || 'Store'
+    return getLegalDefault(type(), lang, siteName)
   })
 
   return {
