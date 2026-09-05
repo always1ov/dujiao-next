@@ -88,11 +88,37 @@ git push --force-with-lease origin custom
 
 ## 与 deploy 的关系
 
-`deploy` 分支用官方镜像 `dujiaonext/dujiao-next`，**不包含**本分支的改动。要把本分支的改动部署上去：
+`deploy` 分支默认用官方镜像，**不包含**本分支的改动。本分支每次 push 都会由 GitHub Actions
+（`.github/workflows/build-image.yml`）用仓库自带的 `Dockerfile` 构建镜像并推到 `ghcr.io/always1ov/shop`，
+amd64 和 arm64 各一份，两个 tag：
 
-1. 在本分支加一个 GitHub Actions workflow，用仓库自带的 `Dockerfile` 构建镜像，推到 `ghcr.io/always1ov/dujiao-next`，
-   tag 用版本号或提交号
-2. `deploy` 分支的 compose 把 `image` 改成 `ghcr.io/always1ov/dujiao-next:${IMAGE_TAG}`，`IMAGE_TAG` 指到上一步的 tag
-3. 不要在 `deploy` 的 compose 里写 `build:`。Dokploy 拉的是 `deploy` 分支，那上面没有源码
+- `custom`：始终指向最新一次构建
+- `custom-<7 位提交号>`：固定不变，用于回滚
 
-后台的「一键升级」在容器里本来就被禁用，自建镜像后升级同样是改 `IMAGE_TAG` 再 Redeploy。
+首次使用前到仓库的 Actions 页确认工作流已启用（fork 出来的仓库默认关闭，点一下启用即可）。
+构建约 10 到 15 分钟，在 Actions 页看进度。
+
+**上线本分支的版本**：Dokploy Environment 改两行，然后 Redeploy。
+
+```
+IMAGE_REPO=ghcr.io/always1ov/shop
+IMAGE_TAG=custom
+```
+
+**回滚**：`IMAGE_TAG` 改成某个 `custom-<提交号>`；或改回官方镜像
+`IMAGE_REPO=dujiaonext/dujiao-next`、`IMAGE_TAG=v1.4.7`。
+
+**镜像私有时**：仓库私有则镜像默认也私有，NAS 拉取要登录。Dokploy → Settings → Registry 添加 `ghcr.io`，
+用户名填 GitHub 用户名，密码填带 `read:packages` 权限的 Personal Access Token。仓库公开时镜像公开，不用登录。
+
+**国内拉取慢**：镜像公开的话可以走 GHCR 镜像站，把 `IMAGE_REPO` 改成加速站给的前缀加 `always1ov/shop`；
+或者换到国内仓库：仓库 Settings → Secrets and variables → Actions 配置
+
+- Variables：`IMAGE_REGISTRY`（如 `registry.cn-hangzhou.aliyuncs.com`）、`IMAGE_NAME`（如 `<命名空间>/shop`）
+- Secrets：`REGISTRY_USERNAME`、`REGISTRY_PASSWORD`
+
+工作流文件不用改，`deploy` 那边把 `IMAGE_REPO` 改成新地址即可。
+
+**升级流程**：按上面「同步上游」把 `main` 合并进 `custom` → push → 等构建完成 → Redeploy。
+后台的「一键升级」在容器里被禁用，不要指望它。不要在 `deploy` 的 compose 里写 `build:`，
+Dokploy 拉的是 `deploy` 分支，那上面没有源码。

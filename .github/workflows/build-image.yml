@@ -1,0 +1,78 @@
+name: build-image
+
+# 只在 custom 分支触发：main 上没有这个文件，永远不会误构建上游代码
+on:
+  push:
+    branches: [custom]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  packages: write
+
+env:
+  # 默认推到 GHCR，用 GITHUB_TOKEN 登录，不需要额外账号。
+  # 换到其他仓库（例如阿里云容器镜像服务）时在仓库 Settings → Secrets and variables → Actions 里配置：
+  #   Variables: IMAGE_REGISTRY（如 registry.cn-hangzhou.aliyuncs.com）、IMAGE_NAME（如 <命名空间>/shop）
+  #   Secrets:   REGISTRY_USERNAME、REGISTRY_PASSWORD
+  REGISTRY: ${{ vars.IMAGE_REGISTRY || 'ghcr.io' }}
+  IMAGE_NAME: ${{ vars.IMAGE_NAME || format('{0}/shop', github.repository_owner) }}
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      # 版本号 = 最近的上游 tag + 本分支提交距离，例如 v1.4.7-3-gf7273e4-custom；
+      # 拿不到上游 tag 时退化为 custom-<sha>。后台页脚显示的就是它。
+      - name: Resolve version
+        id: ver
+        run: |
+          git fetch --tags --quiet https://github.com/dujiao-next/dujiao-next.git || true
+          v="$(git describe --tags --always 2>/dev/null || true)"
+          [ -n "$v" ] || v="custom-${GITHUB_SHA::7}"
+          echo "version=${v}-custom" >> "$GITHUB_OUTPUT"
+          echo "APP_VERSION=${v}-custom"
+
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
+
+      - name: Set up Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Login to registry
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ secrets.REGISTRY_USERNAME || github.actor }}
+          password: ${{ secrets.REGISTRY_PASSWORD || secrets.GITHUB_TOKEN }}
+
+      # custom 永远指向最新一次构建；custom-<sha> 固定不变，用于回滚
+      - name: Image metadata
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+          tags: |
+            type=raw,value=custom
+            type=sha,prefix=custom-,format=short
+
+      # Dockerfile 的前端和 Go 构建阶段都固定在构建机原生架构上运行并交叉编译，
+      # 所以 arm64 只多一个 alpine 运行时层，几乎不增加耗时
+      - name: Build and push
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          platforms: linux/amd64,linux/arm64
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          build-args: |
+            APP_VERSION=${{ steps.ver.outputs.version }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
