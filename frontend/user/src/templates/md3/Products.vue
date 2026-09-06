@@ -12,7 +12,7 @@
     </header>
 
     <!-- 工具栏：搜索 + 视图切换 -->
-    <div class="sticky top-16 z-20 -mx-4 bg-[color:var(--md-sys-color-surface)]/95 px-4 py-2 backdrop-blur sm:-mx-6 sm:px-6" :aria-label="t('md3.products.toolbarLabel')">
+    <div class="sticky top-16 z-20 -mx-4 lg:top-0 bg-[color:var(--md-sys-color-surface)]/95 px-4 py-2 backdrop-blur sm:-mx-6 sm:px-6" :aria-label="t('md3.products.toolbarLabel')">
       <div class="flex items-center gap-2">
         <label class="md3-search md3-search-sm min-w-0 flex-1">
           <Search />

@@ -23,7 +23,7 @@
 
     <div class="grid items-start gap-5 lg:grid-cols-[260px_1fr]">
       <!-- 侧栏：桌面导航抽屉 / 移动端横向 chips -->
-      <aside class="min-w-0 lg:sticky lg:top-[80px]">
+      <aside class="min-w-0 lg:sticky lg:top-6">
         <nav class="-mx-4 flex gap-2 overflow-x-auto px-4 pb-1 [scrollbar-width:none] sm:-mx-6 sm:px-6 lg:mx-0 lg:grid lg:gap-0.5 lg:overflow-visible lg:rounded-[var(--md-shape-lg)] lg:bg-[color:var(--md-sys-color-surface-container-low)] lg:p-3 [&::-webkit-scrollbar]:hidden">
           <button
             v-for="item in visibleSectionItems"

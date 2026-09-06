@@ -65,7 +65,7 @@
         </div>
 
         <!-- 购买卡（手机紧跟图册，桌面右侧吸顶并跨两行） -->
-        <aside class="md3-card p-5 lg:sticky lg:top-[80px] lg:col-start-2 lg:row-start-1 lg:row-span-2">
+        <aside class="md3-card p-5 lg:sticky lg:top-6 lg:col-start-2 lg:row-start-1 lg:row-span-2">
           <h2 class="md3-title-s mb-3 text-[color:var(--md-sys-color-on-surface-variant)]">{{ t('md3.detail.buyCardTitle') }}</h2>
 
           <!-- 价格 -->
