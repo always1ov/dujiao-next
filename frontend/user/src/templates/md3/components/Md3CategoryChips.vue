@@ -1,5 +1,5 @@
 <template>
-  <aside class="min-w-0 lg:sticky lg:top-[92px]" data-test="category-side">
+  <aside class="min-w-0 lg:sticky lg:top-[80px]" data-test="category-side">
     <!-- 移动端 / 平板：横向滚动的 filter chips -->
     <div class="-mx-4 flex gap-2 overflow-x-auto px-4 pb-1 [scrollbar-width:none] sm:-mx-6 sm:px-6 lg:hidden [&::-webkit-scrollbar]:hidden">
       <button

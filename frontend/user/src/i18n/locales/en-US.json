@@ -1831,7 +1831,8 @@
       "notice": "Notice",
       "hello": "Hi, {name}",
       "loginRegister": "Sign in / Register",
-      "menu": "Menu"
+      "menu": "Menu",
+      "moreCategories": "More categories"
     },
     "footer": {
       "shopping": "Shopping guide",

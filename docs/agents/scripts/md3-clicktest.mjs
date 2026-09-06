@@ -178,7 +178,7 @@ for (const vp of viewports) {
   if (!isMobile) {
     await check('头部', '搜索框 → /products?search=', async () => {
       await T('header-search').locator('input').fill('Steam')
-      await T('header-search').locator('button[type=submit]').click(); await wait(900)
+      await T('header-search').locator('input').press('Enter'); await wait(900)
       assert(path() === '/products' && url().includes('search=Steam'), `实际 ${url()}`)
       const titles = await T('products-grid').locator('h3').allTextContents()
       assert(titles.length > 0 && titles.every((x) => /steam/i.test(x)), `结果不全是 Steam：${titles.join('|')}`)
@@ -187,45 +187,45 @@ for (const vp of viewports) {
     await check('头部', '「我的订单」→ 游客查单', async () => { await T('header-orders').click(); await wait(500); assert(path() === '/guest/orders', path()) })
     await check('头部', '购物车入口', async () => { await T('header-cart').click(); await wait(500); assert(path() === '/cart', path()) })
     await check('头部', '品牌 → 首页', async () => { await page.locator('.md3-brand').first().click(); await wait(500); assert(path() === '/', path()) })
-    await check('工具条', '最新公告链接', async () => { await T('util-notice').click(); await wait(500); assert(path().startsWith('/blog/'), path()) })
-    await check('工具条', '登录 / 注册', async () => { await T('util-login').click(); await wait(500); assert(path() === '/auth/login', path()) })
-    await check('工具条', '游客查单', async () => { await T('util-lookup').click(); await wait(500); assert(path() === '/guest/orders', path()) })
-    await check('工具条', '深浅色切换', async () => {
+    await check('头部', '登录按钮', async () => { await T('header-login').click(); await wait(500); assert(path() === '/auth/login', path()) })
+    await check('头部', '深浅色切换', async () => {
       const before = await page.evaluate(() => document.documentElement.classList.contains('dark'))
       await T('theme-toggle').click(); await wait(300)
       const after = await page.evaluate(() => document.documentElement.classList.contains('dark'))
       assert(before !== after, '主题未切换')
       await T('theme-toggle').click(); await wait(200)
     })
-    await check('工具条', '语言切换 → English → 简体', async () => {
+    await check('头部', '语言切换 → English → 简体', async () => {
+      const ph = async () => (await T('header-search').locator('input').getAttribute('placeholder')) || ''
       await T('lang-toggle').click(); await wait(200)
       await page.getByRole('button', { name: 'English' }).click(); await wait(500)
-      assert((await T('header-search').locator('button[type=submit]').textContent()).includes('Search'), '切英文后搜索按钮未变')
+      assert(/search/i.test(await ph()), '切英文后搜索框未变')
       await goto('/products')
-      assert((await T('header-search').locator('button[type=submit]').textContent()).includes('Search'), '语言未跨页保持')
+      assert(/search/i.test(await ph()), '语言未跨页保持')
       await T('lang-toggle').click(); await wait(200)
       await page.getByRole('button', { name: '简体中文' }).click(); await wait(500)
-      assert((await T('header-search').locator('button[type=submit]').textContent()).includes('搜索'), '切回中文失败')
+      assert((await ph()).includes('搜索'), '切回中文失败')
     })
     await goto('/')
-    await check('分类条', '「全部分类」下拉 + 一级/二级链接', async () => {
-      await T('catbar-all').click(); await wait(300)
-      assert(await visible('mega-menu'), '下拉未出现')
-      const parents = T('mega-menu').locator('a.md3-mega-parent')
-      const children = T('mega-menu').locator('a.md3-mega-child')
-      assert(await parents.count() >= 4 && await children.count() >= 2, `一级 ${await parents.count()} 二级 ${await children.count()}`)
-      const href = await children.first().getAttribute('href')
-      await children.first().click(); await wait(600)
+    await check('导航', '「更多分类」下拉（一级分类超过 5 个时）', async () => {
+      if (!(await T('nav-more-cats').count())) return '一级分类不超过 5 个，无下拉'
+      await T('nav-more-cats').click(); await wait(300)
+      assert(await visible('nav-more-menu'), '下拉未出现')
+      const links = T('nav-more-menu').locator('a')
+      assert(await links.count() >= 1, '下拉里没有分类')
+      const href = await links.first().getAttribute('href')
+      await links.first().click(); await wait(600)
       assert(path() === href, `期望 ${href}，实际 ${path()}`)
       assert(await T('crumbs').first().isVisible(), '分类页面包屑缺失')
+      return `下拉 ${await links.count()} 项`
     })
     await goto('/')
-    await check('分类条', '逐个点击导航链接', async () => {
-      const n = await page.locator('nav.md3-catbar a.md3-catbar-link').count()
+    await check('导航', '逐个点击导航链接', async () => {
+      const n = await page.locator('[data-test="topnav"] a.md3-top-link').count()
       const visited = []
       for (let i = 0; i < n; i++) {
         await goto('/')
-        const link = page.locator('nav.md3-catbar a.md3-catbar-link').nth(i)
+        const link = page.locator('[data-test="topnav"] a.md3-top-link').nth(i)
         const href = await link.getAttribute('href')
         const target = await link.getAttribute('target')
         if (target === '_blank' || /^https?:/.test(href || '')) { visited.push(`${href}(外链跳过)`); continue }

@@ -1,37 +1,59 @@
 <template>
   <div class="md3-scope">
-    <!-- ==================== 桌面：工具条（欢迎语 / 最新公告 / 账户 / 语言 / 深浅色） ==================== -->
-    <div class="md3-util hidden lg:block">
-      <div class="md3-container flex h-[34px] items-center justify-between gap-6">
-        <div class="flex min-w-0 items-center">
-          <span class="flex-none">{{ t('md3.shell.welcome', { site: brandName }) }}</span>
-          <template v-if="noticeEnabled && latestNotice">
-            <span class="md3-util-sep"></span>
-            <RouterLink :to="`/blog/${latestNotice.slug}`" class="md3-util-link min-w-0" data-test="util-notice">
-              <Bell />
-              <span class="truncate">{{ t('md3.shell.notice') }}：{{ getLocalizedText(latestNotice.title) }}</span>
-            </RouterLink>
-          </template>
-        </div>
-        <div class="flex flex-none items-center">
-          <template v-if="userAuthStore.isAuthenticated">
-            <RouterLink to="/me" class="md3-util-link"><User /> {{ t('md3.shell.hello', { name: userProfileStore.displayName }) }}</RouterLink>
-            <span class="md3-util-sep"></span>
-            <button type="button" class="md3-util-link" @click="userAuthStore.logout()">{{ t('navbar.logout') }}</button>
-          </template>
-          <template v-else>
-            <template v-if="personalCenterEnabled">
-              <RouterLink to="/auth/login" class="md3-util-link" data-test="util-login">{{ t('md3.shell.loginRegister') }}</RouterLink>
-              <span class="md3-util-sep"></span>
-            </template>
-            <RouterLink to="/guest/orders" class="md3-util-link" data-test="util-lookup"><ClipboardList /> {{ t('navbar.guestOrders') }}</RouterLink>
-          </template>
-          <span class="md3-util-sep"></span>
-          <div ref="langEl" class="relative">
-            <button type="button" class="md3-util-link" :aria-expanded="langOpen" :aria-label="t('navbar.selectLanguage')" data-test="lang-toggle" @click="toggleLang">
-              <Globe /> {{ currentLangName }} <ChevronDown />
+    <!-- ==================== 桌面：单行导航（品牌 / 导航链接 / 紧凑搜索 / 图标），像博客那样一行放下 ==================== -->
+    <header class="md3-topnav hidden lg:block" :class="{ 'is-scrolled': scrolled }">
+      <div class="md3-container flex h-16 items-center gap-3">
+        <RouterLink to="/" class="md3-brand flex-none" :title="brandName">
+          <img v-if="brandLogo" :src="brandLogo" :alt="brandName" class="md3-brand-logo !h-8" />
+          <span class="md3-brand-name">{{ brandName }}</span>
+        </RouterLink>
+
+        <nav class="ml-4 flex min-w-0 flex-1 items-center gap-0.5 overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden" :aria-label="t('md3.shell.categories')" data-test="topnav">
+          <RouterLink to="/" class="md3-top-link" :class="{ 'is-active': isActive('home') }">{{ t('nav.home') }}</RouterLink>
+          <RouterLink v-if="!isListMode" to="/products" class="md3-top-link" :class="{ 'is-active': route.path === '/products' }">{{ t('nav.products') }}</RouterLink>
+          <RouterLink v-for="cat in inlineCategories" :key="`top-${cat.id}`" :to="catLink(cat)" class="md3-top-link" :class="{ 'is-active': route.params.slug === cat.slug }">{{ catName(cat) }}</RouterLink>
+          <!-- 一级分类超过 3 个时，「更多分类」下拉列出全部一二级分类；悬停展开，点击只负责打开，Esc / 点外面 / 路由切换收起 -->
+          <div v-if="moreCategories.length" ref="megaEl" class="relative flex-none" @mouseenter="megaOpen = true" @mouseleave="megaOpen = false" @keydown.escape="megaOpen = false">
+            <button type="button" class="md3-top-link" :aria-expanded="megaOpen" data-test="nav-more-cats" @click="megaOpen = true">
+              {{ t('md3.shell.moreCategories') }} <ChevronDown class="!h-4 !w-4" />
             </button>
-            <div v-if="langOpen" class="md3-menu absolute right-0 top-full z-[60] mt-1 w-[168px]">
+            <div v-if="megaOpen" class="md3-mega mt-1 !w-[240px] !rounded-[var(--md-shape-sm)]" data-test="nav-more-menu">
+              <div v-for="grp in moreCategories" :key="`more-${grp.id}`" class="md3-mega-group">
+                <RouterLink :to="catLink(grp)" class="md3-mega-parent" @click="megaOpen = false">
+                  <img v-if="grp.icon" :src="getImageUrl(grp.icon)" :alt="catName(grp)" loading="lazy" />
+                  <Tag v-else class="h-4 w-4 text-[color:var(--md-sys-color-on-surface-variant)]" />
+                  <span class="truncate">{{ catName(grp) }}</span>
+                </RouterLink>
+                <div v-if="grp.children.length" class="md3-mega-children">
+                  <RouterLink v-for="child in grp.children" :key="`more-c-${child.id}`" :to="catLink(child)" class="md3-mega-child" @click="megaOpen = false">{{ catName(child) }}</RouterLink>
+                </div>
+              </div>
+            </div>
+          </div>
+          <template v-for="item in secondaryNavItems" :key="`d-${item.key}`">
+            <RouterLink v-if="item.type === 'route'" :to="item.path" class="md3-top-link" :class="{ 'is-active': route.path === item.path }">{{ item.label }}</RouterLink>
+            <a v-else :href="item.path" :target="item.target" rel="noopener noreferrer" class="md3-top-link">{{ item.label }}</a>
+          </template>
+        </nav>
+
+        <form class="md3-nav-search flex-none" role="search" data-test="header-search" @submit.prevent="submitSearch">
+          <Search />
+          <input v-model="query" type="search" :placeholder="t('md3.home.searchPlaceholder')" :aria-label="t('products.searchLabel')" />
+          <button type="submit" class="sr-only">{{ t('md3.shell.search') }}</button>
+        </form>
+
+        <div class="flex flex-none items-center gap-0.5">
+          <RouterLink :to="ordersLink" class="md3-icon-btn" :class="{ 'text-[color:var(--md-sys-color-primary)]': isActive('orders') }" :aria-label="t('md3.shell.orders')" :title="t('md3.shell.orders')" data-test="header-orders"><ClipboardList /></RouterLink>
+          <RouterLink to="/cart" class="md3-icon-btn relative" :class="{ 'text-[color:var(--md-sys-color-primary)]': isActive('cart') }" :aria-label="t('navbar.cart')" :title="t('navbar.cart')" data-test="header-cart">
+            <ShoppingCart />
+            <span v-if="cartCount > 0" class="md3-header-count !left-auto !right-0 !top-0" data-test="cart-count">{{ cartCount > 99 ? '99+' : cartCount }}</span>
+          </RouterLink>
+          <button type="button" class="md3-icon-btn" :aria-label="t('resellerConsole.common.toggleTheme')" :title="t('md3.shell.theme')" data-test="theme-toggle" @click="toggleTheme">
+            <Sun v-if="theme === 'dark'" /><Moon v-else />
+          </button>
+          <div ref="langEl" class="relative">
+            <button type="button" class="md3-icon-btn" :aria-label="t('navbar.selectLanguage')" :title="currentLangName" :aria-expanded="langOpen" data-test="lang-toggle" @click="toggleLang"><Globe /></button>
+            <div v-if="langOpen" class="md3-menu absolute right-0 top-[calc(100%+8px)] z-[60] w-[168px]">
               <button v-for="lang in languages" :key="`dl-${lang.code}`" type="button" class="md3-menu-item" :class="{ 'is-active': appStore.locale === lang.code }" @click="changeLanguage(lang.code)">
                 <Check v-if="appStore.locale === lang.code" />
                 <span v-else class="w-5"></span>
@@ -39,76 +61,13 @@
               </button>
             </div>
           </div>
-          <span class="md3-util-sep"></span>
-          <button type="button" class="md3-util-link" :aria-label="t('resellerConsole.common.toggleTheme')" data-test="theme-toggle" @click="toggleTheme">
-            <Sun v-if="theme === 'dark'" /><Moon v-else /> {{ t('md3.shell.theme') }}
-          </button>
+          <template v-if="userAuthStore.isAuthenticated">
+            <RouterLink to="/me" class="md3-btn md3-btn-tonal md3-btn-sm ml-1 max-w-[180px]"><User /> <span class="truncate">{{ userProfileStore.displayName }}</span></RouterLink>
+            <button type="button" class="md3-icon-btn" :aria-label="t('navbar.logout')" :title="t('navbar.logout')" @click="userAuthStore.logout()"><LogOut /></button>
+          </template>
+          <RouterLink v-else-if="personalCenterEnabled" to="/auth/login" class="md3-btn md3-btn-filled md3-btn-sm ml-1" data-test="header-login">{{ t('navbar.login') }}</RouterLink>
         </div>
       </div>
-    </div>
-
-    <!-- ==================== 桌面：主头部（品牌 / 搜索 / 订单 / 购物车，吸顶）+ 分类导航条（随页滚动） ==================== -->
-    <header class="hidden lg:block">
-    <div class="md3-mall-header" :class="{ 'is-scrolled': scrolled }">
-      <div class="md3-container flex h-[76px] items-center gap-8">
-        <RouterLink to="/" class="md3-brand flex-none" :title="brandName">
-          <img v-if="brandLogo" :src="brandLogo" :alt="brandName" class="md3-brand-logo" />
-          <span class="md3-brand-name">{{ brandName }}</span>
-        </RouterLink>
-
-        <form class="md3-mall-search mx-auto w-full max-w-[560px]" role="search" data-test="header-search" @submit.prevent="submitSearch">
-          <input v-model="query" type="search" :placeholder="t('md3.home.searchPlaceholder')" :aria-label="t('products.searchLabel')" />
-          <button type="submit"><Search /> {{ t('md3.shell.search') }}</button>
-        </form>
-
-        <div class="flex flex-none items-center gap-1">
-          <RouterLink :to="ordersLink" class="md3-header-action" :class="{ 'is-active': isActive('orders') }" data-test="header-orders">
-            <ClipboardList />
-            <span>{{ t('md3.shell.orders') }}</span>
-          </RouterLink>
-          <RouterLink to="/cart" class="md3-header-action" :class="{ 'is-active': isActive('cart') }" data-test="header-cart">
-            <ShoppingCart />
-            <span>{{ t('navbar.cart') }}</span>
-            <span v-if="cartCount > 0" class="md3-header-count" data-test="cart-count">{{ cartCount > 99 ? '99+' : cartCount }}</span>
-          </RouterLink>
-        </div>
-      </div>
-    </div>
-
-      <nav class="md3-catbar" :aria-label="t('md3.shell.categories')">
-        <div class="md3-container flex items-stretch gap-2">
-          <!-- 悬停展开、移开收起；点击只负责打开（悬停已打开时再点不会关掉），Esc / 点外面 / 路由切换收起 -->
-          <div ref="megaEl" class="relative flex-none" @mouseenter="megaOpen = true" @mouseleave="megaOpen = false" @keydown.escape="megaOpen = false">
-            <button type="button" class="md3-catbar-all" :aria-expanded="megaOpen" data-test="catbar-all" @click="megaOpen = true">
-              <Menu /> {{ t('md3.shell.allCategories') }} <ChevronDown />
-            </button>
-            <div v-if="megaOpen" class="md3-mega" data-test="mega-menu">
-              <div v-for="grp in categoryGroups" :key="`mega-${grp.id}`" class="md3-mega-group">
-                <RouterLink :to="catLink(grp)" class="md3-mega-parent" @click="megaOpen = false">
-                  <img v-if="grp.icon" :src="getImageUrl(grp.icon)" :alt="catName(grp)" loading="lazy" />
-                  <Tag v-else class="h-4 w-4 text-[color:var(--md-sys-color-on-surface-variant)]" />
-                  <span class="truncate">{{ catName(grp) }}</span>
-                  <ChevronRight class="ml-auto h-4 w-4 flex-none text-[color:var(--md-sys-color-outline)]" />
-                </RouterLink>
-                <div v-if="grp.children.length" class="md3-mega-children">
-                  <RouterLink v-for="child in grp.children" :key="`mega-c-${child.id}`" :to="catLink(child)" class="md3-mega-child" @click="megaOpen = false">{{ catName(child) }}</RouterLink>
-                </div>
-              </div>
-              <div v-if="!categoryGroups.length" class="md3-body-s px-4 py-3 text-[color:var(--md-sys-color-on-surface-variant)]">{{ t('products.empty') }}</div>
-            </div>
-          </div>
-
-          <div class="flex min-w-0 flex-1 items-center overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
-            <RouterLink to="/" class="md3-catbar-link" :class="{ 'is-active': isActive('home') }">{{ t('nav.home') }}</RouterLink>
-            <RouterLink v-if="!isListMode" to="/products" class="md3-catbar-link" :class="{ 'is-active': route.path === '/products' }">{{ t('nav.products') }}</RouterLink>
-            <RouterLink v-for="cat in topCategories" :key="`top-${cat.id}`" :to="catLink(cat)" class="md3-catbar-link" :class="{ 'is-active': route.params.slug === cat.slug }">{{ catName(cat) }}</RouterLink>
-            <template v-for="item in secondaryNavItems" :key="`d-${item.key}`">
-              <RouterLink v-if="item.type === 'route'" :to="item.path" class="md3-catbar-link" :class="{ 'is-active': route.path === item.path }"><component :is="item.icon" /> {{ item.label }}</RouterLink>
-              <a v-else :href="item.path" :target="item.target" rel="noopener noreferrer" class="md3-catbar-link"><component :is="item.icon" /> {{ item.label }}</a>
-            </template>
-          </div>
-        </div>
-      </nav>
     </header>
 
     <!-- ==================== 手机 / 平板：品牌 + 菜单，下方搜索条 ==================== -->
@@ -276,10 +235,10 @@ import { computed, onMounted, onUnmounted, ref, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import {
-  Bell, Check, ChevronDown, ChevronRight, ClipboardList, CreditCard, Globe, Home, LayoutGrid, LogOut, Menu,
+  Check, ChevronDown, ClipboardList, CreditCard, Globe, Home, LayoutGrid, LogOut, Menu,
   MessageCircle, Moon, Search, Send, ShieldCheck, ShoppingCart, Sun, Tag, User, UserPlus, X, Zap,
 } from 'lucide-vue-next'
-import { categoryAPI, postAPI } from '../../../api'
+import { categoryAPI } from '../../../api'
 import { useAppStore } from '../../../stores/app'
 import { useCartStore } from '../../../stores/cart'
 import { useUserAuthStore } from '../../../stores/userAuth'
@@ -352,7 +311,12 @@ const ordersLink = computed(() => (userAuthStore.isAuthenticated ? '/me/orders' 
 // ==================== 分类（分类导航条 / 全部分类下拉 / 页脚） ====================
 const categories = ref<PublicCategory[]>([])
 const categoryGroups = computed(() => buildCategoryGroups(categories.value))
+// 手机「更多」菜单里列前 6 个一级分类
 const topCategories = computed(() => categoryGroups.value.slice(0, 6))
+// 桌面单行导航放不下太多：一级分类不超过 3 个就全放；否则只放前 2 个，
+// 「更多分类」下拉里列出全部一级分类及其二级（博客 / 公告 / 关于这些导航项优先级更高，不能被分类挤掉）
+const inlineCategories = computed(() => (categoryGroups.value.length <= 3 ? categoryGroups.value : categoryGroups.value.slice(0, 2)))
+const moreCategories = computed(() => (categoryGroups.value.length <= 3 ? [] : categoryGroups.value))
 const catName = (cat: PublicCategory) => getLocalizedText(cat.name) || cat.slug || ''
 const catLink = (cat: PublicCategory) => (cat.slug ? `/categories/${cat.slug}` : '/products')
 const loadCategories = async () => {
@@ -361,18 +325,6 @@ const loadCategories = async () => {
     categories.value = res.data.data || []
   } catch (err) {
     console.error('Failed to load categories:', err)
-  }
-}
-
-// 工具条里的最新公告
-const latestNotice = ref<any>(null)
-const loadLatestNotice = async () => {
-  if (!noticeEnabled.value) return
-  try {
-    const res = await postAPI.list({ page: 1, page_size: 1, type: 'notice' })
-    latestNotice.value = (res.data.data || [])[0] || null
-  } catch (err) {
-    console.error('Failed to load notice:', err)
   }
 }
 
@@ -435,7 +387,6 @@ onMounted(() => {
   // .md3-scope 之外，靠 body 上的这个 class 拿到 MD3 配色，详见 styles/md3.css
   document.body.classList.add('md3-tokens')
   void loadCategories()
-  void loadLatestNotice()
 })
 onUnmounted(() => {
   document.removeEventListener('click', onDocClick)

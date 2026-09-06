@@ -163,7 +163,7 @@
       </div>
 
       <!-- 右侧：金额摘要 + 提交（桌面吸顶） -->
-      <aside class="md3-panel p-5 lg:sticky lg:top-[92px]" data-test="checkout-summary">
+      <aside class="md3-panel p-5 lg:sticky lg:top-[80px]" data-test="checkout-summary">
         <h2 class="md3-title-m">{{ t('md3.checkout.summaryTitle') }}</h2>
         <div class="mt-3 grid gap-2 border-b border-[color:var(--md-sys-color-outline-variant)] pb-3">
           <div class="md3-kv"><span>{{ t('checkout.previewOriginal') }}</span><span>{{ formatPrice(previewOriginal, previewCurrency) }}</span></div>

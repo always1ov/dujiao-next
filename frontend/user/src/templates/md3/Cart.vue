@@ -78,7 +78,7 @@
       </section>
 
       <!-- 桌面：右侧结算卡 -->
-      <aside class="md3-panel hidden p-5 lg:sticky lg:top-[92px] lg:block" data-test="cart-summary">
+      <aside class="md3-panel hidden p-5 lg:sticky lg:top-[80px] lg:block" data-test="cart-summary">
         <h2 class="md3-title-m">{{ t('md3.cart.summaryTitle') }}</h2>
         <div class="mt-3 grid gap-2 border-b border-[color:var(--md-sys-color-outline-variant)] pb-3">
           <div class="md3-kv"><span>{{ t('cart.itemsCount') }}</span><span>{{ totalItems }}</span></div>

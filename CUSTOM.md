@@ -26,6 +26,7 @@
 | 2026-09-06 | md3 外壳改成 Material 3 大屏布局：桌面左侧导航栏（无顶栏）、手机搜索式应用栏、单行页脚 | 店主要求头部、中间、底部全都变 | `templates/md3/layout/Md3Layout.vue`、`styles/md3.css`、四个页面的吸顶偏移 | 见 git log |
 | 2026-09-06 | md3 商城化：电商三段式头部（工具条 / 品牌+搜索+购物车 / 分类导航条）+ 四栏页脚，首页三栏首屏 + 热门与分类分区，列表页左侧分类树，详情两栏 + 同类推荐，购物车表格 + 结算卡，结算左表单右摘要，商品卡改电商样式（暖红价格色）；顺手修了下拉一点即关、手机菜单、手机搜索框、手机购买条四个问题；新增全量点击测试脚本与演示数据脚本 | 店主要「像样子的商城」并测试所有能点的功能（桌面 60/60、手机 53/53 通过） | `templates/md3/**`、`styles/md3.css` 第 8 节、三个 locale JSON 的 `md3.*`、`docs/agents/scripts/`、`docs/agents/smoke-test.md`、`.scratch/relayout/issues/09、10` | 见 git log |
 | 2026-09-06 | md3 配色从紫色换成蓝色（种子 #1a73e8，vibrant），品牌处不再显示首字母方块（有 logo 显示 logo，没有只显示店名），页脚「购物指南」不再列商品分类；新增 `md3-palette.mjs` 一条命令换主色 | 店主看过线上效果后的三点反馈 | `styles/md3.css` 令牌块、`layout/Md3Layout.vue`、`docs/agents/scripts/md3-palette.mjs`、`docs/agents/smoke-test.md` | 见 git log |
+| 2026-09-06 | md3 桌面顶部改回单行导航：品牌 + 导航链接（首页、商品中心、前 5 个一级分类、「更多分类」下拉、博客/公告/关于/自定义）+ 紧凑搜索框 + 订单/购物车/深浅色/语言图标 + 登录按钮；去掉工具条与「全部分类」大按钮那排 | 店主：页面内容很完美，顶部要像以前或像博客那样的导航 | `layout/Md3Layout.vue`、`styles/md3.css` 第 9 节、四处吸顶偏移、点击测试脚本 | 见 git log |
 
 ## 给 AI 的协作流程
 

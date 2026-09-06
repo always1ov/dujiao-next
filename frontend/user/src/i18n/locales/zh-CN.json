@@ -1831,7 +1831,8 @@
       "notice": "公告",
       "hello": "你好，{name}",
       "loginRegister": "登录 / 注册",
-      "menu": "菜单"
+      "menu": "菜单",
+      "moreCategories": "更多分类"
     },
     "footer": {
       "shopping": "购物指南",

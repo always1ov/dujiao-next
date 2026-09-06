@@ -670,3 +670,17 @@ body.dark.md3-tokens {
   /* 表格式列表（购物车） */
   .md3-table-head { display: grid; padding: 10px 16px; border-radius: var(--md-shape-sm); background: var(--md-sys-color-surface-container); font-size: 12px; font-weight: 500; color: var(--md-sys-color-on-surface-variant); }
 }
+
+/* ---------- 9. 桌面单行导航（替代第 8 节的三段式头部；工具条 / 分类导航条的类保留给以后要用的人） ---------- */
+@layer components {
+  .md3-topnav { position: sticky; top: 0; z-index: 40; background: var(--md-sys-color-surface); border-bottom: 1px solid var(--md-sys-color-outline-variant); transition: box-shadow var(--md-duration-medium); }
+  .md3-topnav.is-scrolled { box-shadow: var(--md-elev-1); }
+  /* 导航链接不许被 flex 压扁（.md3-top-link 有 overflow:hidden，默认会缩成一个字） */
+  .md3-topnav .md3-top-link { flex: none; padding: 0 12px; }
+  .md3-top-link > svg { width: 16px; height: 16px; flex: none; }
+  .md3-nav-search { display: flex; align-items: center; gap: 8px; width: 160px; height: 40px; padding: 0 14px; border-radius: var(--md-shape-full); background: var(--md-sys-color-surface-container-high); color: var(--md-sys-color-on-surface-variant); transition: width var(--md-duration-medium) var(--md-motion-standard), background-color var(--md-duration-short); }
+  .md3-nav-search:focus-within { width: 260px; background: var(--md-sys-color-surface-container-highest); outline: 2px solid var(--md-sys-color-primary); outline-offset: -2px; }
+  .md3-nav-search > svg { width: 18px; height: 18px; flex: none; }
+  .md3-nav-search input { flex: 1; min-width: 0; border: 0; outline: none; background: transparent; font-size: 14px; color: var(--md-sys-color-on-surface); }
+  .md3-nav-search input::placeholder { color: var(--md-sys-color-outline); }
+}
