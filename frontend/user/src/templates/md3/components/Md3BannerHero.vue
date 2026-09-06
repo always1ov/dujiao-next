@@ -32,7 +32,7 @@
         </div>
 
         <div class="mt-auto max-w-[640px] space-y-3">
-          <span class="md3-badge" :class="heroImage ? 'bg-white/20 text-white backdrop-blur-sm' : 'bg-[color:var(--md-sys-color-surface)]/70 text-[color:var(--md-sys-color-primary)]'">
+          <span class="md3-badge" :class="heroImage ? 'bg-[rgba(255,255,255,0.2)] text-[#ffffff] backdrop-blur-sm' : 'bg-[color:var(--md-sys-color-surface)]/70 text-[color:var(--md-sys-color-primary)]'">
             <Zap /> {{ heroBadge }}
           </span>
           <h2 class="md3-headline-s sm:md3-headline-m font-medium" :class="heroImage ? 'text-white' : 'text-[color:var(--md-sys-color-on-primary-container)]'">{{ heroTitle }}</h2>
@@ -41,7 +41,7 @@
             <button
               type="button"
               class="md3-btn"
-              :class="heroImage ? 'bg-white text-[#1b1b21] hover:shadow-[var(--md-elev-1)]' : 'md3-btn-filled'"
+              :class="heroImage ? 'bg-[#ffffff] text-[#1b1b21] hover:shadow-[var(--md-elev-1)]' : 'md3-btn-filled'"
               @click="goToHeroLink"
             >
               {{ heroPrimaryButtonText }}
@@ -58,7 +58,7 @@
             class="h-2 rounded-full transition-all"
             :class="[
               idx === currentBannerIndex ? 'w-6' : 'w-2 opacity-50 hover:opacity-80',
-              heroImage ? 'bg-white' : 'bg-[color:var(--md-sys-color-primary)]',
+              heroImage ? 'bg-[#ffffff]' : 'bg-[color:var(--md-sys-color-primary)]',
             ]"
             :aria-label="t('common.switchBanner', { n: idx + 1 })"
             @click="selectHeroBanner(idx)"

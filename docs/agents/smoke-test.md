@@ -120,3 +120,16 @@ PW_MODULE=/opt/node22/lib/node_modules/playwright/index.mjs PW_CHROMIUM=/opt/pw-
 2026-09-06 基线：桌面 60/60，手机 53/53。新增页面或按钮时往脚本里加一个 `check()`，用 `data-test` 属性定位，不要靠文案。
 
 已知的「不是缺陷」：未登录点「个人中心」跳登录页；库存被之前的订单扣光时购物车拒绝加量并提示；注册页未勾选协议时提交按钮禁用，空提交由浏览器原生 `required` 拦截。
+
+## 7. 换主色
+
+md3 的全部颜色由一个种子色生成，不要手改单个 `--md-sys-color-*`。换色一条命令：
+
+```bash
+mkdir -p /tmp/palette && cd /tmp/palette && npm i @material/material-color-utilities@0.3.0
+node <仓库>/docs/agents/scripts/md3-palette.mjs '#1a73e8'        # 默认 vibrant，饱和一些
+MD3_VARIANT=tonal-spot node <仓库>/docs/agents/scripts/md3-palette.mjs '#1a73e8'   # Material 默认的低饱和
+```
+
+改完 `pnpm run build`，截桌面与手机的亮色、暗色各一张看对比度。价格色 `--md-ext-price` 与 success / warning / info 是语义色，在 `md3.css` 第 8 节与令牌块里手改。
+当前种子记在 `md3.css` 头部注释里。

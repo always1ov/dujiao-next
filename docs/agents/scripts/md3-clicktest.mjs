@@ -76,6 +76,7 @@ for (const vp of viewports) {
     const dlg = page.locator('[role="dialog"]').filter({ hasText: /欢迎光临/ })
     assert(await dlg.count() > 0, '公告弹窗未出现')
     await dismissAnnouncement()
+    await dlg.first().waitFor({ state: 'detached', timeout: 3000 }).catch(() => {})
     assert(await dlg.count() === 0, '公告弹窗未关闭')
     await page.reload({ waitUntil: 'networkidle' }); await wait(300)
     assert(await page.locator('[role="dialog"]').filter({ hasText: /欢迎光临/ }).count() === 0, '「今日不再提示」后仍弹出')

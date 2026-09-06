@@ -52,10 +52,7 @@
     <div class="md3-mall-header" :class="{ 'is-scrolled': scrolled }">
       <div class="md3-container flex h-[76px] items-center gap-8">
         <RouterLink to="/" class="md3-brand flex-none" :title="brandName">
-          <span class="md3-brand-mark">
-            <img v-if="brandLogo" :src="brandLogo" :alt="brandName" />
-            <template v-else>{{ brandInitial }}</template>
-          </span>
+          <img v-if="brandLogo" :src="brandLogo" :alt="brandName" class="md3-brand-logo" />
           <span class="md3-brand-name">{{ brandName }}</span>
         </RouterLink>
 
@@ -118,10 +115,7 @@
     <header class="md3-mheader lg:hidden" :class="{ 'is-scrolled': scrolled }">
       <div class="flex h-14 items-center gap-1 px-4">
         <RouterLink to="/" class="md3-brand min-w-0 flex-1" :title="brandName">
-          <span class="md3-brand-mark !h-9 !w-9 !text-base">
-            <img v-if="brandLogo" :src="brandLogo" :alt="brandName" />
-            <template v-else>{{ brandInitial }}</template>
-          </span>
+          <img v-if="brandLogo" :src="brandLogo" :alt="brandName" class="md3-brand-logo !h-8" />
           <span class="md3-brand-name !text-[17px]">{{ brandName }}</span>
         </RouterLink>
         <RouterLink to="/cart" class="md3-icon-btn relative flex-none" :aria-label="t('navbar.cart')">
@@ -181,10 +175,7 @@
       <div class="md3-container grid gap-8 py-10 sm:grid-cols-2 lg:grid-cols-[1.4fr_1fr_1fr_1.3fr]">
         <div>
           <RouterLink to="/" class="md3-brand">
-            <span class="md3-brand-mark">
-              <img v-if="brandLogo" :src="brandLogo" :alt="brandName" />
-              <template v-else>{{ brandInitial }}</template>
-            </span>
+            <img v-if="brandLogo" :src="brandLogo" :alt="brandName" class="md3-brand-logo" />
             <span class="md3-brand-name">{{ brandName }}</span>
           </RouterLink>
           <p class="md3-body-s mt-3 max-w-[40ch]">{{ brandDescription || t('footer.description') }}</p>
@@ -201,7 +192,6 @@
           <h3 class="md3-footer-title">{{ t('md3.footer.shopping') }}</h3>
           <div class="md3-footer-links">
             <RouterLink v-if="!isListMode" to="/products" class="md3-footer-link">{{ t('nav.products') }}</RouterLink>
-            <RouterLink v-for="cat in topCategories.slice(0, 4)" :key="`f-cat-${cat.id}`" :to="catLink(cat)" class="md3-footer-link">{{ catName(cat) }}</RouterLink>
             <RouterLink to="/cart" class="md3-footer-link">{{ t('navbar.cart') }}</RouterLink>
             <RouterLink v-if="!userAuthStore.isAuthenticated" to="/guest/orders" class="md3-footer-link">{{ t('navbar.guestOrders') }}</RouterLink>
             <RouterLink v-if="personalCenterEnabled || userAuthStore.isAuthenticated" to="/me" class="md3-footer-link">{{ t('navbar.personalCenter') }}</RouterLink>
@@ -327,7 +317,6 @@ const scrolled = ref(false)
 const year = new Date().getFullYear()
 
 const brandName = computed(() => String(appStore.config?.brand?.site_name || '').trim() || 'Store')
-const brandInitial = computed(() => Array.from(brandName.value)[0] || 'S')
 const brandLogo = computed(() => {
   const raw = String(appStore.config?.brand?.site_logo || '').trim()
   return raw ? getImageUrl(raw) : ''

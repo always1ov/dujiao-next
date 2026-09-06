@@ -42,7 +42,7 @@
 
           <div v-if="showQRCode" class="mx-auto mt-5 max-w-[300px]">
             <div class="md3-body-s mb-3 text-[color:var(--md-sys-color-on-surface-variant)]">{{ paymentGuideTitle }}</div>
-            <div class="aspect-square w-full overflow-hidden rounded-[var(--md-shape-lg)] bg-white p-3 shadow-[var(--md-elev-1)]"><img :src="qrImageUrl" alt="QR Code" class="h-full w-full object-contain" /></div>
+            <div class="aspect-square w-full overflow-hidden rounded-[var(--md-shape-lg)] bg-[#ffffff] p-3 shadow-[var(--md-elev-1)]"><img :src="qrImageUrl" alt="QR Code" class="h-full w-full object-contain" /></div>
             <div v-if="qrUsingPayLinkFallback" class="md3-body-s mt-2.5 text-[color:var(--md-sys-color-on-surface-variant)]">{{ t('payment.qrFallbackHint') }}</div>
           </div>
           <div v-else class="mx-auto mt-5 flex max-w-[360px] flex-col items-center gap-2.5">

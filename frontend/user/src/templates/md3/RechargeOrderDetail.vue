@@ -60,7 +60,7 @@
         <div class="grid gap-4 md:grid-cols-2">
           <div v-if="showQRCode" class="flex flex-col items-center rounded-[var(--md-shape-lg)] bg-[color:var(--md-sys-color-surface-container-low)] p-5 text-center">
             <div class="md3-body-s mb-3 text-[color:var(--md-sys-color-on-surface-variant)]">{{ t('payment.qrTitle') }}</div>
-            <div class="aspect-square w-full max-w-[220px] overflow-hidden rounded-[var(--md-shape-md)] bg-white p-2"><img :src="qrImageUrl" alt="Recharge QR" class="h-full w-full object-contain" /></div>
+            <div class="aspect-square w-full max-w-[220px] overflow-hidden rounded-[var(--md-shape-md)] bg-[#ffffff] p-2"><img :src="qrImageUrl" alt="Recharge QR" class="h-full w-full object-contain" /></div>
             <div v-if="qrUsingPayLinkFallback" class="md3-body-s mt-3 text-[color:var(--md-sys-color-on-surface-variant)]">{{ t('payment.qrFallbackHint') }}</div>
           </div>
           <div class="rounded-[var(--md-shape-lg)] bg-[color:var(--md-sys-color-surface-container-low)] p-4">
