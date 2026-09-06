@@ -8,9 +8,9 @@ import { useAppStore } from '../stores/app'
  *   因此可以一页一页地把新设计搬进 vault，旧站全程可用。
  */
 
-export type StorefrontTemplate = 'classic' | 'vault'
+export type StorefrontTemplate = 'classic' | 'vault' | 'md3'
 
-export const STOREFRONT_TEMPLATES: StorefrontTemplate[] = ['classic', 'vault']
+export const STOREFRONT_TEMPLATES: StorefrontTemplate[] = ['classic', 'vault', 'md3']
 export const DEFAULT_TEMPLATE: StorefrontTemplate = 'classic'
 
 const OVERRIDE_KEY = 'dj-storefront-template'
@@ -29,7 +29,7 @@ const readOverride = (): StorefrontTemplate | null => {
 
 /**
  * 预览用：URL 带 ?template=vault / ?template=classic 时持久化到 localStorage，
- * ?template=reset 清除覆盖。站长正式切换走站点配置，不依赖此入口。
+ * ?template=md3 同理，?template=reset 清除覆盖。站长正式切换走站点配置，不依赖此入口。
  * 在 app 挂载前调用一次即可。
  */
 export const initTemplateOverride = (): void => {
@@ -60,19 +60,23 @@ export const getActiveTemplate = (): StorefrontTemplate => {
     return DEFAULT_TEMPLATE
 }
 
-// vault 模板页面（按需动态加载）。key 形如 './vault/Home.vue'
-const vaultViews = import.meta.glob('./vault/**/*.vue')
-
 type ViewLoader = () => Promise<unknown>
 
+// 各模板页面（按需动态加载）。key 形如 './vault/Home.vue' / './md3/Home.vue'
+const templateViews: Record<Exclude<StorefrontTemplate, 'classic'>, Record<string, ViewLoader>> = {
+    vault: import.meta.glob('./vault/**/*.vue') as Record<string, ViewLoader>,
+    md3: import.meta.glob('./md3/**/*.vue') as Record<string, ViewLoader>,
+}
+
 /**
- * 路由 view 解析器：vault 模板下若存在同名页面则用 vault 版，否则回退传入的 classic loader。
+ * 路由 view 解析器：当前模板下若存在同名页面则用模板版，否则回退传入的 classic loader。
  * 用法：`component: templateView('Home', () => import('../views/Home.vue'))`
  */
 export const templateView = (name: string, classicLoader: ViewLoader): ViewLoader => {
     return () => {
-        if (getActiveTemplate() === 'vault') {
-            const loader = vaultViews[`./vault/${name}.vue`]
+        const active = getActiveTemplate()
+        if (active !== 'classic') {
+            const loader = templateViews[active][`./${active}/${name}.vue`]
             if (loader) return loader()
         }
         return classicLoader()

@@ -218,7 +218,7 @@ const form = reactive({
   },
   scripts: [] as SiteScriptItem[],
   footer_links: [] as FooterLinkItem[],
-  storefront_template: 'classic' as 'classic' | 'vault',
+  storefront_template: 'classic' as 'classic' | 'vault' | 'md3',
   template_mode: 'card' as 'card' | 'list',
 })
 
@@ -457,7 +457,7 @@ const fetchSettings = async () => {
       form.template_mode = rawTemplateMode === 'list' ? 'list' : 'card'
 
       const rawStorefrontTemplate = String(data.storefront_template || 'classic').trim()
-      form.storefront_template = rawStorefrontTemplate === 'vault' ? 'vault' : 'classic'
+      form.storefront_template = rawStorefrontTemplate === 'vault' || rawStorefrontTemplate === 'md3' ? rawStorefrontTemplate : 'classic'
     }
 
     if (orderRes.data && orderRes.data.data) {
@@ -1136,7 +1136,7 @@ onMounted(() => {
           </div>
         </div>
         <div class="px-6 py-6">
-          <RadioGroup v-model="form.storefront_template" class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <RadioGroup v-model="form.storefront_template" class="grid grid-cols-1 sm:grid-cols-3 gap-4">
             <!-- Classic -->
             <Label
               class="relative flex cursor-pointer flex-col items-center gap-3 rounded-xl border-2 p-6 transition-all"
@@ -1182,6 +1182,33 @@ onMounted(() => {
                 <div class="mt-1 text-xs text-muted-foreground">{{ t('admin.settings.template.vaultModeDesc') }}</div>
               </div>
               <div v-if="form.storefront_template === 'vault'" class="absolute right-3 top-3">
+                <svg class="h-5 w-5 text-primary" fill="currentColor" viewBox="0 0 20 20">
+                  <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+                </svg>
+              </div>
+            </Label>
+
+            <!-- Material 3 -->
+            <Label
+              class="relative flex cursor-pointer flex-col items-center gap-3 rounded-xl border-2 p-6 transition-all"
+              :class="form.storefront_template === 'md3'
+                ? 'border-primary bg-primary/5 ring-1 ring-primary/20'
+                : 'border-border hover:border-muted-foreground/30'"
+            >
+              <RadioGroupItem value="md3" class="sr-only" />
+              <div class="flex h-16 w-16 items-center justify-center rounded-xl" :class="form.storefront_template === 'md3' ? 'bg-primary/10 text-primary' : 'bg-muted text-muted-foreground'">
+                <svg class="h-8 w-8" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.5">
+                  <rect x="3" y="3" width="8" height="8" rx="2.5" />
+                  <circle cx="17" cy="7" r="4" />
+                  <rect x="3" y="13" width="8" height="8" rx="4" />
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M13 21l4-8 4 8h-8z" />
+                </svg>
+              </div>
+              <div class="text-center">
+                <div class="font-semibold" :class="form.storefront_template === 'md3' ? 'text-primary' : ''">{{ t('admin.settings.template.md3Mode') }}</div>
+                <div class="mt-1 text-xs text-muted-foreground">{{ t('admin.settings.template.md3ModeDesc') }}</div>
+              </div>
+              <div v-if="form.storefront_template === 'md3'" class="absolute right-3 top-3">
                 <svg class="h-5 w-5 text-primary" fill="currentColor" viewBox="0 0 20 20">
                   <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
                 </svg>

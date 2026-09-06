@@ -1,3 +1,9 @@
+/* 后台 Material Design 3 换肤：色彩令牌与前台 md3 模板同一套 tonal 调色板
+   （种子色 #4f46e5，见 frontend/user/src/templates/md3/styles/md3.css），
+   圆角 12px 起、按钮全圆角、字体 Roboto（本地自托管，中文回退系统字体）。 */
+@import "@fontsource/roboto/latin-400.css";
+@import "@fontsource/roboto/latin-500.css";
+@import "@fontsource/roboto/latin-700.css";
 @import "tailwindcss";
 @import "tw-animate-css";
 
@@ -5,26 +11,26 @@
 
 @layer base {
   :root {
-    --background: 0 0% 100%;
-    --foreground: 240 10% 3.9%;
-    --card: 0 0% 100%;
-    --card-foreground: 240 10% 3.9%;
-    --popover: 0 0% 100%;
-    --popover-foreground: 240 10% 3.9%;
-    --primary: 240 5.9% 10%;
-    --primary-foreground: 0 0% 98%;
-    --secondary: 240 4.8% 95.9%;
-    --secondary-foreground: 240 5.9% 10%;
-    --muted: 240 4.8% 95.9%;
-    --muted-foreground: 240 3.8% 46.1%;
-    --accent: 240 4.8% 95.9%;
-    --accent-foreground: 240 5.9% 10%;
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 0 0% 98%;
-    --border: 240 5.9% 90%;
-    --input: 240 5.9% 90%;
-    --ring: 240 5.9% 10%;
-    --radius: 0.5rem;
+    --background: 274 100.0% 98.6%;
+    --foreground: 240 10.0% 11.8%;
+    --card: 0 0.0% 100.0%;
+    --card-foreground: 240 10.0% 11.8%;
+    --popover: 0 0.0% 100.0%;
+    --popover-foreground: 240 10.0% 11.8%;
+    --primary: 242 24.8% 45.9%;
+    --primary-foreground: 0 0.0% 100.0%;
+    --secondary: 247 67.6% 92.7%;
+    --secondary-foreground: 243 12.7% 31.0%;
+    --muted: 270 26.7% 94.1%;
+    --muted-foreground: 247 6.0% 29.2%;
+    --accent: 262 20.0% 92.2%;
+    --accent-foreground: 240 10.0% 11.8%;
+    --destructive: 0 75.5% 41.6%;
+    --destructive-foreground: 0 0.0% 100.0%;
+    --border: 256 16.9% 87.3%;
+    --input: 256 10.5% 79.4%;
+    --ring: 242 24.8% 45.9%;
+    --radius: 0.75rem;
     --chart-1: 176 72% 34%;
     --chart-2: 32 94% 52%;
     --chart-3: 215 25% 40%;
@@ -32,25 +38,25 @@
     --chart-5: 195 65% 42%;
   }
   .dark {
-    --background: 240 10% 3.9%;
-    --foreground: 0 0% 98%;
-    --card: 240 10% 3.9%;
-    --card-foreground: 0 0% 98%;
-    --popover: 240 10% 3.9%;
-    --popover-foreground: 0 0% 98%;
-    --primary: 0 0% 98%;
-    --primary-foreground: 240 5.9% 10%;
-    --secondary: 240 3.7% 15.9%;
-    --secondary-foreground: 0 0% 98%;
-    --muted: 240 3.7% 15.9%;
-    --muted-foreground: 240 5% 64.9%;
-    --accent: 240 3.7% 15.9%;
-    --accent-foreground: 0 0% 98%;
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 0 0% 98%;
-    --border: 240 3.7% 15.9%;
-    --input: 240 3.7% 15.9%;
-    --ring: 240 4.9% 83.9%;
+    --background: 240 11.6% 8.4%;
+    --foreground: 270 15.4% 89.8%;
+    --card: 240 10.0% 11.8%;
+    --card-foreground: 270 15.4% 89.8%;
+    --popover: 250 8.8% 13.3%;
+    --popover-foreground: 270 15.4% 89.8%;
+    --primary: 243 100.0% 87.6%;
+    --primary-foreground: 241 39.1% 27.1%;
+    --secondary: 243 12.7% 31.0%;
+    --secondary-foreground: 247 67.6% 92.7%;
+    --muted: 250 8.8% 13.3%;
+    --muted-foreground: 256 10.5% 79.4%;
+    --accent: 250 6.8% 17.3%;
+    --accent-foreground: 270 15.4% 89.8%;
+    --destructive: 6 100.0% 83.5%;
+    --destructive-foreground: 357 100.0% 20.6%;
+    --border: 250 5.5% 21.6%;
+    --input: 247 6.0% 29.2%;
+    --ring: 243 100.0% 87.6%;
     --chart-1: 176 72% 40%;
     --chart-2: 32 94% 52%;
     --chart-3: 195 65% 42%;
@@ -86,9 +92,9 @@
   --color-chart-5: hsl(var(--chart-5));
 
   --radius-sm: calc(var(--radius) - 4px);
-  --radius-md: calc(var(--radius) - 2px);
-  --radius-lg: var(--radius);
-  --radius-xl: calc(var(--radius) + 4px);
+  --radius-md: var(--radius);
+  --radius-lg: calc(var(--radius) + 4px);
+  --radius-xl: calc(var(--radius) + 16px);
 }
 
 @layer base {
@@ -97,6 +103,7 @@
   }
   body {
     @apply bg-background text-foreground antialiased;
-    font-family: ui-sans-serif, system-ui, -apple-system, 'Segoe UI', 'Helvetica Neue', Arial, 'Noto Sans', sans-serif;
+    font-family: 'Roboto', system-ui, -apple-system, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', 'Noto Sans CJK SC', 'Noto Sans', sans-serif;
+    letter-spacing: 0.01em;
   }
 }

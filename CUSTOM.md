@@ -18,6 +18,17 @@
 | 2026-09-05 | 去除访客可见的上游品牌痕迹（详见下节） | 不让访客看出所用框架 | 前台、后台、Go 共 34 个文件 | `f7273e4` |
 | 2026-09-05 | 服务条款、隐私政策、关于页、页脚与首页的内置默认文案（虚拟商品不支持售后） | 后台留空也有像样的内容 | `frontend/user/src/content/legalDefaults.ts`、`useLegal.ts`、`useAbout.ts`、三个 locale JSON | `2ef2b3e`、`8a6aaba` |
 | 2026-09-05 | 导航配置新增「个人中心」开关，关闭后未登录访客看不到页脚和手机底栏的入口 | 游客店不想引导注册 | `site_normalize.go`、`SettingsNavigationTab.vue`、`useNavConfig.ts`、`VaultLayout.vue`、`MobileBottomNav.vue` | `edd2e47` |
+| 2026-09-06 | 「账户入口」开关同时隐藏顶栏登录按钮（classic、vault） | 与个人中心一起收口 | `Navbar.vue`、`VaultLayout.vue`、后台文案 | `4ab478b` |
+| 2026-09-06 | 新增第三套店面模板 `md3`（Material Design 3）：全部前台页面按 MD3 重做，纯新增文件不改上游页面；后台同步换 MD3 令牌 | 想要 MD3 风格的 UI，又不能破坏上游同步 | `frontend/user/src/templates/md3/**`、`registry.ts`、`App.vue`、后台 `Settings.vue` + i18n、`constants.go`、`site_normalize.go`、后台 `style.css` 与 `components/ui/*` | 见 git log |
+
+## md3 模板（Material Design 3）
+
+- 位置：`frontend/user/src/templates/md3/`。与 `vault` 同一套机制：`registry.ts` 里 `templateView()` 按当前模板找同名页面，找不到就回退 classic，所以上游新增页面不会白屏，只是那一页先用 classic 样式。
+- 启用：后台 → 站点设置 → 店面模板 → 选「Material 3」。临时预览：任意地址加 `?template=md3`。
+- 设计令牌在 `styles/md3.css`：色彩角色由 `@material/material-color-utilities` 以靛蓝 `#4f46e5` 为种子生成（亮/暗两套），不要手改单个色值；改种子色时重新生成整份。同一个文件把 shadcn 的 `--ui-*` 覆盖成 MD3 色，所以公用组件（Toast、弹窗、下拉、二维码支付页的公共组件）自动跟着换色。
+- 组件类命名 `.md3-btn-*`、`.md3-card*`、`.md3-chip`、`.md3-badge-*`、`.md3-banner-*`、`.md3-input`、`.md3-nav-bar` 等，页面只用这些类 + Tailwind utility，业务逻辑全部复用 `composables/`，不复制任何逻辑。
+- 后台换肤只改了 `frontend/admin/src/style.css`（HSL 令牌、圆角、字体）和 `components/ui/` 里按钮/卡片/输入框/标签页/弹窗几个基础件的 class，页面文件没动，方便同步上游。
+- 字体：Roboto 通过 `@fontsource/roboto` 本地打包，不走 Google Fonts；中文回退系统字体栈。
 
 ## 去品牌改动说明
 

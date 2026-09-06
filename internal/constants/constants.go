@@ -530,6 +530,7 @@ const (
 const (
 	StorefrontTemplateClassic = "classic"
 	StorefrontTemplateVault   = "vault"
+	StorefrontTemplateMd3     = "md3"
 	StorefrontTemplateDefault = StorefrontTemplateClassic
 )
 
