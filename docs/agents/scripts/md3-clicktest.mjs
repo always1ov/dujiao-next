@@ -207,8 +207,8 @@ for (const vp of viewports) {
       assert((await ph()).includes('搜索'), '切回中文失败')
     })
     await goto('/')
-    await check('导航', '「更多分类」下拉（一级分类超过 5 个时）', async () => {
-      if (!(await T('nav-more-cats').count())) return '一级分类不超过 5 个，无下拉'
+    await check('导航', '「更多分类」下拉（一级分类超过 3 个时）', async () => {
+      if (!(await T('nav-more-cats').count())) return '一级分类不超过 3 个，无下拉'
       await T('nav-more-cats').click(); await wait(300)
       assert(await visible('nav-more-menu'), '下拉未出现')
       const links = T('nav-more-menu').locator('a')
