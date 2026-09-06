@@ -22,3 +22,8 @@ internal/web/dist/
 # Agents 配置
 .agents/
 skills-lock.json
+# custom 分支：mattpocock/skills 装在 .agents/skills，随仓库提交（.claude/skills 是指向它的符号链接）
+!.agents/
+.agents/*
+!.agents/skills/
+!skills-lock.json
