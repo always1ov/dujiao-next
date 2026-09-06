@@ -1723,5 +1723,71 @@
     "authInvalid": "Credentials mismatch, please try again",
     "authSubmit": "Save and search",
     "authClear": "Clear saved info"
+  },
+  "md3": {
+    "home": {
+      "tagline": "Digital goods, delivered on payment",
+      "searchPlaceholder": "Search products or keywords",
+      "searchAction": "Search",
+      "browseAll": "All products",
+      "sectionMore": "See all",
+      "noticeLabel": "Notice",
+      "howTitle": "How it works",
+      "steps": {
+        "pick": {
+          "title": "Pick a product",
+          "desc": "Choose the option and quantity, no account needed"
+        },
+        "pay": {
+          "title": "Pay online",
+          "desc": "Any payment method the store has enabled"
+        },
+        "get": {
+          "title": "Delivered instantly",
+          "desc": "Auto-fulfilled items arrive on the order page and by email right after payment"
+        }
+      },
+      "latestTitle": "Latest updates",
+      "trustLookup": "Guest orders can be looked up any time with email and order password"
+    },
+    "products": {
+      "resultCount": "{n} products",
+      "viewGrid": "Grid",
+      "viewList": "List",
+      "toolbarLabel": "Filters and view"
+    },
+    "detail": {
+      "tabDetails": "Details",
+      "tabNotes": "Before you buy",
+      "tabPosts": "Related posts",
+      "buyCardTitle": "Buy",
+      "noteAuto": "Auto fulfillment: the key is delivered to your order page and email right after payment, visible only to you.",
+      "noteManual": "Manual fulfillment: the store owner handles delivery after payment; watch your email and order page.",
+      "noteNoAfterSales": "Digital goods cannot be returned once delivered; check the option and quantity before ordering.",
+      "noteLookup": "For guest orders, keep your email and order password; they are how you look the order up later.",
+      "noteMember": "This item is for members only; sign in to order.",
+      "gallery": "Gallery"
+    },
+    "checkout": {
+      "summaryTitle": "Order summary",
+      "itemsCount": "{n} items",
+      "showItems": "Show items",
+      "hideItems": "Hide items",
+      "contactTitle": "Contact",
+      "payTitle": "Payment",
+      "payableLabel": "Total due"
+    },
+    "payment": {
+      "amountTitle": "Amount due",
+      "chooseChannel": "Choose a payment method",
+      "orderSection": "Order"
+    },
+    "guest": {
+      "lookupTitle": "Find my order",
+      "resultsTitle": "Results"
+    },
+    "cart": {
+      "summaryBar": "Total"
+    }
   }
 }

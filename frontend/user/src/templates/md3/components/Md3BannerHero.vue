@@ -1,7 +1,8 @@
 <template>
-  <section v-if="showHeroSection" class="md3-container pt-4 sm:pt-6">
+  <component :is="variant === 'card' ? 'div' : 'section'" v-if="showHeroSection" :class="variant === 'card' ? 'h-full' : 'md3-container pt-4 sm:pt-6'">
     <div
       class="relative overflow-hidden rounded-[var(--md-shape-xl)] bg-[color:var(--md-sys-color-primary-container)] text-[color:var(--md-sys-color-on-primary-container)]"
+      :class="variant === 'card' ? 'flex h-full min-h-[220px] flex-col' : ''"
       @touchstart="onBannerTouchStart"
       @touchend="onBannerTouchEnd"
     >
@@ -17,14 +18,14 @@
       <div v-if="heroImage" class="absolute inset-0 bg-gradient-to-r from-black/65 via-black/35 to-black/10"></div>
 
       <!-- 骨架 -->
-      <div v-if="bannerLoading" class="relative flex min-h-[200px] flex-col justify-end gap-3 p-6 sm:min-h-[260px] sm:p-8 md:min-h-[320px] md:p-10">
+      <div v-if="bannerLoading" class="relative flex min-h-[200px] flex-1 flex-col justify-end gap-3 p-6 sm:p-8" :class="variant === 'card' ? '' : 'sm:min-h-[260px] md:min-h-[320px] md:p-10'">
         <div class="md3-skeleton h-6 w-28 rounded-full"></div>
         <div class="md3-skeleton h-9 w-3/4 max-w-[520px]"></div>
         <div class="md3-skeleton h-4 w-1/2 max-w-[360px]"></div>
       </div>
 
       <!-- 内容 -->
-      <div v-else class="relative flex min-h-[200px] flex-col justify-between gap-4 p-6 sm:min-h-[260px] sm:p-8 md:min-h-[320px] md:p-10" :class="heroImage ? 'text-white' : ''">
+      <div v-else class="relative flex min-h-[200px] flex-1 flex-col justify-between gap-4 p-6 sm:p-8" :class="[heroImage ? 'text-white' : '', variant === 'card' ? '' : 'sm:min-h-[260px] md:min-h-[320px] md:p-10']">
         <div v-if="bannerCount > 1" class="flex items-center justify-end gap-1">
           <button type="button" class="md3-icon-btn" :class="heroImage ? 'text-white' : ''" :aria-label="t('common.previousBanner')" @click="handlePrevHeroBanner"><ChevronLeft /></button>
           <button type="button" class="md3-icon-btn" :class="heroImage ? 'text-white' : ''" :aria-label="t('common.nextBanner')" @click="handleNextHeroBanner"><ChevronRight /></button>
@@ -65,7 +66,7 @@
         </div>
       </div>
     </div>
-  </section>
+  </component>
 </template>
 
 <script setup lang="ts">
@@ -73,6 +74,10 @@ import { onMounted, onUnmounted } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { ArrowRight, ChevronLeft, ChevronRight, Zap } from 'lucide-vue-next'
 import { useBannerCarousel } from '../../../composables/useBannerCarousel'
+
+const props = withDefaults(defineProps<{ variant?: 'section' | 'card' }>(), { variant: 'section' })
+const emit = defineEmits<{ loaded: [hasBanners: boolean] }>()
+void props
 
 const { t } = useI18n()
 
@@ -83,7 +88,10 @@ const {
   onBannerTouchStart, onBannerTouchEnd, stopHeroAutoPlay,
 } = useBannerCarousel()
 
-onMounted(() => { void loadBanners() })
+onMounted(async () => {
+  await loadBanners()
+  emit('loaded', bannerCount.value > 0)
+})
 onUnmounted(() => stopHeroAutoPlay())
 </script>
 

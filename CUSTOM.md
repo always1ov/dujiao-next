@@ -22,6 +22,7 @@
 | 2026-09-06 | 新增第三套店面模板 `md3`（Material Design 3）：全部前台页面按 MD3 重做，纯新增文件不改上游页面；后台同步换 MD3 令牌 | 想要 MD3 风格的 UI，又不能破坏上游同步 | `frontend/user/src/templates/md3/**`、`registry.ts`、`App.vue`、后台 `Settings.vue` + i18n、`constants.go`、`site_normalize.go`、后台 `style.css` 与 `components/ui/*` | 见 git log |
 | 2026-09-06 | 按 mattpocock/skills 的 code-review + improve-codebase-architecture 过一遍：md3 首页改走 `useNavConfig`，商品卡/列表项共用逻辑抽成 `useProductCard.ts`，Go 侧补店面模板与导航开关归一化的表驱动测试 | 评审发现的接缝泄漏与重复；归一化此前无测试 | `templates/md3/Home.vue`、`templates/md3/useProductCard.ts`、`components/Md3Product*.vue`、`site_normalize_template_test.go` | 见 git log |
 | 2026-09-06 | 把 AI 协作流程固化进仓库：AGENTS.md（CLAUDE.md 符号链接）、CONTEXT.md 词汇表、docs/adr 五条决定、docs/agents 三份配置、mattpocock/skills 25 个 skill 装到 .agents/skills，`.scratch/rebrand/` 开始自建品牌的 grilling | 让任何 AI 下次都能直接接手 | `AGENTS.md`、`CONTEXT.md`、`docs/`、`.agents/`、`.claude/`、`.scratch/`、`.gitignore` | 见 git log |
+| 2026-09-06 | md3 模板六个页面重排信息架构（首页搜索优先 + 按分类分组、列表页顶部工具栏与网格/列表切换、详情页摘要条 + 分页签 + 吸顶购买卡、购物车/结算/支付单列 + 吸底操作条、游客查单居中卡），新增 `md3.*` 三语文案 | 页面组织不再逐页照搬上游，熟悉上游的人认不出 | `templates/md3/{Home,Products,ProductDetail,Cart,Checkout,Payment,GuestOrders}.vue`、`Md3BannerHero.vue`、三个 locale JSON、`.scratch/relayout/` | 见 git log |
 
 ## 给 AI 的协作流程
 

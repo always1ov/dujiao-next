@@ -1723,5 +1723,71 @@
     "authInvalid": "資訊不匹配，請重新輸入",
     "authSubmit": "保存並查詢",
     "authClear": "清除已保存資訊"
+  },
+  "md3": {
+    "home": {
+      "tagline": "數位商品，付款即到帳",
+      "searchPlaceholder": "搜尋商品或關鍵字",
+      "searchAction": "搜尋",
+      "browseAll": "全部商品",
+      "sectionMore": "查看全部",
+      "noticeLabel": "公告",
+      "howTitle": "怎麼買",
+      "steps": {
+        "pick": {
+          "title": "選好商品",
+          "desc": "選擇規格與數量，訪客也可下單"
+        },
+        "pay": {
+          "title": "線上付款",
+          "desc": "支援店鋪開啟的所有付款方式"
+        },
+        "get": {
+          "title": "自動到帳",
+          "desc": "自動發貨商品付款後立刻交付到訂單頁與信箱"
+        }
+      },
+      "latestTitle": "最近更新",
+      "trustLookup": "訪客下單憑信箱和訂單密碼隨時查單"
+    },
+    "products": {
+      "resultCount": "{n} 件商品",
+      "viewGrid": "網格",
+      "viewList": "列表",
+      "toolbarLabel": "篩選與檢視"
+    },
+    "detail": {
+      "tabDetails": "商品詳情",
+      "tabNotes": "購買須知",
+      "tabPosts": "相關文章",
+      "buyCardTitle": "購買",
+      "noteAuto": "自動發貨：付款成功後卡密立刻交付到訂單頁與信箱，僅你可見。",
+      "noteManual": "人工交付：付款後由店主處理，請留意信箱與訂單頁。",
+      "noteNoAfterSales": "虛擬商品一經交付不支援退換，下單前請確認規格與數量。",
+      "noteLookup": "訪客下單請記住信箱與訂單密碼，憑它們在「訪客查單」找回訂單。",
+      "noteMember": "該商品僅限會員購買，登入後即可下單。",
+      "gallery": "商品圖"
+    },
+    "checkout": {
+      "summaryTitle": "訂單摘要",
+      "itemsCount": "{n} 件",
+      "showItems": "展開明細",
+      "hideItems": "收起明細",
+      "contactTitle": "聯絡方式",
+      "payTitle": "付款方式",
+      "payableLabel": "應付"
+    },
+    "payment": {
+      "amountTitle": "應付金額",
+      "chooseChannel": "選擇付款方式",
+      "orderSection": "訂單"
+    },
+    "guest": {
+      "lookupTitle": "查詢我的訂單",
+      "resultsTitle": "查詢結果"
+    },
+    "cart": {
+      "summaryBar": "合計"
+    }
   }
 }

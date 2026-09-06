@@ -74,7 +74,7 @@
 </template>
 
 <script setup lang="ts">
-import { Lock, Package, Pencil, UserPlus, Zap } from 'lucide-vue-next'
+import { Lock, Package, Pencil, ShoppingCart, UserPlus, Zap } from 'lucide-vue-next'
 import { useI18n } from 'vue-i18n'
 import { useProductCard } from '../useProductCard'
 

@@ -1723,5 +1723,71 @@
     "label": "购买身份",
     "member": "会员购买",
     "guest": "游客可购"
+  },
+  "md3": {
+    "home": {
+      "tagline": "数字商品，付款即到账",
+      "searchPlaceholder": "搜索商品或关键词",
+      "searchAction": "搜索",
+      "browseAll": "全部商品",
+      "sectionMore": "查看全部",
+      "noticeLabel": "公告",
+      "howTitle": "怎么买",
+      "steps": {
+        "pick": {
+          "title": "选好商品",
+          "desc": "选择规格与数量，游客也可下单"
+        },
+        "pay": {
+          "title": "在线付款",
+          "desc": "支持店铺开启的所有支付方式"
+        },
+        "get": {
+          "title": "自动到账",
+          "desc": "自动发货商品付款后立刻交付到订单页与邮箱"
+        }
+      },
+      "latestTitle": "最近更新",
+      "trustLookup": "游客下单凭邮箱和订单密码随时查单"
+    },
+    "products": {
+      "resultCount": "{n} 件商品",
+      "viewGrid": "网格",
+      "viewList": "列表",
+      "toolbarLabel": "筛选与视图"
+    },
+    "detail": {
+      "tabDetails": "商品详情",
+      "tabNotes": "购买须知",
+      "tabPosts": "相关文章",
+      "buyCardTitle": "购买",
+      "noteAuto": "自动发货：付款成功后卡密立刻交付到订单页与邮箱，仅你可见。",
+      "noteManual": "人工交付：付款后由店主处理，请留意邮箱与订单页。",
+      "noteNoAfterSales": "虚拟商品一经交付不支持退换，下单前请确认规格与数量。",
+      "noteLookup": "游客下单请记住邮箱与订单密码，凭它们在「游客查单」找回订单。",
+      "noteMember": "该商品仅限会员购买，登录后即可下单。",
+      "gallery": "商品图"
+    },
+    "checkout": {
+      "summaryTitle": "订单摘要",
+      "itemsCount": "{n} 件",
+      "showItems": "展开明细",
+      "hideItems": "收起明细",
+      "contactTitle": "联系方式",
+      "payTitle": "支付方式",
+      "payableLabel": "应付"
+    },
+    "payment": {
+      "amountTitle": "应付金额",
+      "chooseChannel": "选择支付方式",
+      "orderSection": "订单"
+    },
+    "guest": {
+      "lookupTitle": "查询我的订单",
+      "resultsTitle": "查询结果"
+    },
+    "cart": {
+      "summaryBar": "合计"
+    }
   }
 }

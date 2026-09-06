@@ -1,6 +1,6 @@
 # 自建品牌：前台重排与品牌识别
 
-Status: grilling（第 1 轮问题待店主回答）
+Status: paused（店主 2026-09-06 决定先不做品牌化，只做排版重构，见 .scratch/relayout/）
 
 ## 目标
 
