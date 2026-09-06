@@ -319,7 +319,7 @@ func normalizeStorefrontTemplate(raw interface{}) string {
 
 func normalizeNavConfig(value map[string]interface{}) jsonmap.JSON {
 	// builtin: blog / notice / about / personal_center 开关，默认 true。
-	// personal_center 只控制未登录访客看到的入口（页脚、手机底栏），已登录用户始终能进个人中心。
+	// personal_center 只控制未登录访客看到的账户入口（登录按钮、页脚与手机底栏的个人中心），已登录用户始终能进个人中心。
 	builtin := map[string]interface{}{
 		"blog":            true,
 		"notice":          true,

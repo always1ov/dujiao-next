@@ -57,7 +57,7 @@
             {{ t('navbar.guestOrders') }}
           </router-link>
         </Button>
-        <Button v-if="!userAuthStore.isAuthenticated" as-child variant="ghost" size="sm"
+        <Button v-if="!userAuthStore.isAuthenticated && personalCenterEnabled" as-child variant="ghost" size="sm"
           class="hidden lg:inline-flex gap-1.5 text-muted-foreground whitespace-nowrap">
           <router-link to="/auth/login">
             <LogIn class="w-4 h-4 shrink-0 opacity-70" />
@@ -224,7 +224,7 @@ const appStore = useAppStore()
 const cartStore = useCartStore()
 const userAuthStore = useUserAuthStore()
 const { theme, toggleTheme } = useTheme()
-const { primaryNavItems, secondaryNavItems } = useNavConfig()
+const { primaryNavItems, secondaryNavItems, personalCenterEnabled } = useNavConfig()
 
 const showMobileMenu = ref(false)
 const langOpen = ref(false)

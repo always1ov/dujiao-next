@@ -2856,8 +2856,8 @@ const messages = {
           builtin: {
             title: '内置导航项',
             subtitle: '首页始终显示，商品中心由模板模式控制',
-            personalCenter: '个人中心',
-            personalCenterHint: '关闭后页脚和手机底栏不再向未登录访客显示个人中心入口，已登录用户仍可从右上角进入',
+            personalCenter: '账户入口（登录 / 个人中心）',
+            personalCenterHint: '关闭后不再向未登录访客显示登录按钮，以及页脚和手机底栏的个人中心入口；已登录用户不受影响，注册用户仍可直接打开 /auth/login 登录',
             blog: '博客',
             notice: '公告',
             about: '关于',
@@ -7301,8 +7301,8 @@ const messages = {
           builtin: {
             title: '內建導航項',
             subtitle: '首頁始終顯示，商品中心由模板模式控制',
-            personalCenter: '個人中心',
-            personalCenterHint: '關閉後頁尾和手機底欄不再向未登入訪客顯示個人中心入口，已登入用戶仍可從右上角進入',
+            personalCenter: '帳戶入口（登入 / 個人中心）',
+            personalCenterHint: '關閉後不再向未登入訪客顯示登入按鈕，以及頁尾和手機底欄的個人中心入口；已登入用戶不受影響，註冊用戶仍可直接開啟 /auth/login 登入',
             blog: '部落格',
             notice: '公告',
             about: '關於',
@@ -11746,8 +11746,8 @@ const messages = {
           builtin: {
             title: 'Built-in Navigation Items',
             subtitle: 'Home is always visible. Products is controlled by template mode.',
-            personalCenter: 'Personal center',
-            personalCenterHint: 'When off, the footer and mobile bottom bar stop showing the personal center entry to visitors who are not signed in. Signed-in users can still open it from the top-right corner.',
+            personalCenter: 'Account entry (sign in / personal center)',
+            personalCenterHint: 'When off, visitors who are not signed in no longer see the sign-in button or the personal center entries in the footer and mobile bottom bar. Signed-in users are unaffected, and registered users can still open /auth/login directly.',
             blog: 'Blog',
             notice: 'Notice',
             about: 'About',
