@@ -131,6 +131,7 @@ import { useProductList } from '../../composables/useProductList'
 import { useProductListGroups } from '../../composables/useProductListGroups'
 import { usePageSeo } from '../../composables/usePageSeo'
 import { useAppStore } from '../../stores/app'
+import { useNavConfig } from '../../composables/useNavConfig'
 import Md3ProductCard from './components/Md3ProductCard.vue'
 import Md3ProductListItem from './components/Md3ProductListItem.vue'
 import Md3CategoryChips from './components/Md3CategoryChips.vue'
@@ -147,7 +148,8 @@ const { t } = useI18n()
 const { getLocalizedText } = useLocalized()
 const appStore = useAppStore()
 
-const isListMode = computed(() => appStore.config?.template_mode === 'list')
+// 列表/卡片模式与内置导航开关统一走 useNavConfig，不直接读 appStore.config
+const { isListMode, blogEnabled, noticeEnabled } = useNavConfig()
 
 // ==================== 快速购买 ====================
 const quickBuyProduct = ref<any>(null)
@@ -192,9 +194,6 @@ const topCategories = ref<PublicCategory[]>([])
 const catTone = (idx: number) => coverTone(idx)
 const catName = (cat: PublicCategory) => getLocalizedText(cat.name) || cat.slug || ''
 
-const navBuiltin = computed(() => (appStore.config?.nav_config as { builtin?: Record<string, boolean> } | undefined)?.builtin)
-const blogEnabled = computed(() => navBuiltin.value?.blog !== false)
-const noticeEnabled = computed(() => navBuiltin.value?.notice !== false)
 const latestVisible = computed(() => blogEnabled.value || noticeEnabled.value)
 
 const formatDate = (value: string) => (value ? new Date(value).toLocaleDateString() : '')

@@ -20,6 +20,7 @@
 | 2026-09-05 | 导航配置新增「个人中心」开关，关闭后未登录访客看不到页脚和手机底栏的入口 | 游客店不想引导注册 | `site_normalize.go`、`SettingsNavigationTab.vue`、`useNavConfig.ts`、`VaultLayout.vue`、`MobileBottomNav.vue` | `edd2e47` |
 | 2026-09-06 | 「账户入口」开关同时隐藏顶栏登录按钮（classic、vault） | 与个人中心一起收口 | `Navbar.vue`、`VaultLayout.vue`、后台文案 | `4ab478b` |
 | 2026-09-06 | 新增第三套店面模板 `md3`（Material Design 3）：全部前台页面按 MD3 重做，纯新增文件不改上游页面；后台同步换 MD3 令牌 | 想要 MD3 风格的 UI，又不能破坏上游同步 | `frontend/user/src/templates/md3/**`、`registry.ts`、`App.vue`、后台 `Settings.vue` + i18n、`constants.go`、`site_normalize.go`、后台 `style.css` 与 `components/ui/*` | 见 git log |
+| 2026-09-06 | 按 mattpocock/skills 的 code-review + improve-codebase-architecture 过一遍：md3 首页改走 `useNavConfig`，商品卡/列表项共用逻辑抽成 `useProductCard.ts`，Go 侧补店面模板与导航开关归一化的表驱动测试 | 评审发现的接缝泄漏与重复；归一化此前无测试 | `templates/md3/Home.vue`、`templates/md3/useProductCard.ts`、`components/Md3Product*.vue`、`site_normalize_template_test.go` | 见 git log |
 
 ## md3 模板（Material Design 3）
 

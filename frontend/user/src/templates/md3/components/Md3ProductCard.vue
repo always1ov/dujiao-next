@@ -74,49 +74,18 @@
 </template>
 
 <script setup lang="ts">
-import { computed, ref, type Component } from 'vue'
+import { Lock, Package, Pencil, UserPlus, Zap } from 'lucide-vue-next'
 import { useI18n } from 'vue-i18n'
-import { AlarmClock, Lock, Package, Pencil, ShoppingCart, UserPlus, XCircle, Zap } from 'lucide-vue-next'
-import { getFirstImageUrl, getImageUrl } from '../../../utils/image'
-import { useLocalized, useProductLabels } from '../../../composables/useProduct'
-import { coverTone } from '../utils'
+import { useProductCard } from '../useProductCard'
 
 const props = withDefaults(defineProps<{ product: any; index?: number }>(), { index: 0 })
 
 defineEmits<{ quickBuy: [product: any] }>()
 
 const { t } = useI18n()
-const { getLocalizedText, siteCurrency, formatPrice } = useLocalized()
+
 const {
-  getStockStatusLabel, getPurchaseTypeLabel, getFulfillmentTypeLabel,
-  isSoldOut, hasPromotionPrice, getPromotionPriceAmount, hasWholesalePrices, hasPromotionRules,
-} = useProductLabels()
-
-const coverClass = computed(() => coverTone(props.index ?? 0))
-const title = computed(() => getLocalizedText(props.product?.title))
-const categoryName = computed(() => getLocalizedText(props.product?.category?.name))
-const soldOut = computed(() => isSoldOut(props.product))
-const promo = computed(() => hasPromotionPrice(props.product))
-
-const imageErrored = ref(false)
-const coverImage = computed(() => {
-  if (imageErrored.value) return ''
-  const primary = getFirstImageUrl(props.product?.images)
-  if (primary) return primary
-  const icon = props.product?.category?.icon
-  return icon ? getImageUrl(icon) : ''
-})
-
-const stockPill = computed<{ tone: string; icon: Component; label: string }>(() => {
-  if (soldOut.value) return { tone: 'md3-badge-neutral', icon: XCircle, label: t('products.stockStatus.outOfStock') }
-  if (props.product?.stock_status === 'low_stock') return { tone: 'md3-badge-warning', icon: AlarmClock, label: getStockStatusLabel(props.product) }
-  return { tone: 'md3-badge-success', icon: Zap, label: getStockStatusLabel(props.product) }
-})
-
-const priceSignal = computed<{ tone: string; label: string } | null>(() => {
-  if (promo.value) return { tone: 'md3-badge-error', label: t('products.promotionTag') }
-  if (hasWholesalePrices(props.product)) return { tone: 'md3-badge-success', label: t('products.wholesaleTag') }
-  if (hasPromotionRules(props.product)) return { tone: 'md3-badge-tertiary', label: t('products.promotionBadge') }
-  return null
-})
+  title, categoryName, soldOut, promo, coverClass, coverImage, imageErrored, stockPill, priceSignal,
+  siteCurrency, formatPrice, getPromotionPriceAmount, getPurchaseTypeLabel, getFulfillmentTypeLabel,
+} = useProductCard(() => props.product, () => props.index ?? 0)
 </script>
