@@ -101,3 +101,22 @@ await browser.close()
 - 桌面与手机各一遍：顶栏、底部导航栏、商品卡价格是否换行、表单高度是否对齐、暗色模式。
 - 控制台没有 pageerror。
 - 截图发给店主看一眼再提交。
+
+## 6. 全量点击测试（md3 店面）
+
+改了外壳或页面结构之后，不要只看截图，把每个能点的地方跑一遍。脚本在 `docs/agents/scripts/`：
+
+```bash
+# 造演示数据（27 个商品、二级分类、SKU、售罄、限购、横幅、公告、文章、首页弹窗、假网关支付渠道；可重复执行）
+ADMIN_USER=<测试账号> ADMIN_PASS=<测试密码> python3 docs/agents/scripts/seed-demo.py
+# 桌面 + 手机各跑一遍，结果表打到终端，失败项截图与 results.json 落在输出目录
+node docs/agents/scripts/md3-clicktest.mjs /tmp/run/click all
+# Playwright 不在默认位置时：
+PW_MODULE=/opt/node22/lib/node_modules/playwright/index.mjs PW_CHROMIUM=/opt/pw-browsers/chromium node docs/agents/scripts/md3-clicktest.mjs /tmp/run/click desktop
+```
+
+覆盖：首页每个入口、头部与工具条、分类下拉、页脚每个链接、手机菜单与底栏、列表筛选/分页/视图、详情规格/数量/加购/页签/推荐、
+购物车增删改、结算校验与提交、支付页、游客查单、博客/公告/关于/条款/404、登录/注册/找回、运行期 pageerror 与 console.error。
+2026-09-06 基线：桌面 60/60，手机 53/53。新增页面或按钮时往脚本里加一个 `check()`，用 `data-test` 属性定位，不要靠文案。
+
+已知的「不是缺陷」：未登录点「个人中心」跳登录页；库存被之前的订单扣光时购物车拒绝加量并提示；注册页未勾选协议时提交按钮禁用，空提交由浏览器原生 `required` 拦截。

@@ -1748,13 +1748,24 @@
         }
       },
       "latestTitle": "Latest updates",
-      "trustLookup": "Guest orders can be looked up any time with email and order password"
+      "trustLookup": "Guest orders can be looked up any time with email and order password",
+      "hotTitle": "Hot picks",
+      "noticeTitle": "Latest notices",
+      "blogTitle": "Guides & posts",
+      "categoryNav": "Categories",
+      "moreNotices": "More notices",
+      "moreBlog": "More posts",
+      "noBanner": "Genuine digital goods, delivered on payment",
+      "shopNow": "Shop now",
+      "viewCategory": "Open category"
     },
     "products": {
       "resultCount": "{n} products",
       "viewGrid": "Grid",
       "viewList": "List",
-      "toolbarLabel": "Filters and view"
+      "toolbarLabel": "Filters and view",
+      "sidebarTitle": "Categories",
+      "allTitle": "All products"
     },
     "detail": {
       "tabDetails": "Details",
@@ -1766,7 +1777,16 @@
       "noteNoAfterSales": "Digital goods cannot be returned once delivered; check the option and quantity before ordering.",
       "noteLookup": "For guest orders, keep your email and order password; they are how you look the order up later.",
       "noteMember": "This item is for members only; sign in to order.",
-      "gallery": "Gallery"
+      "gallery": "Gallery",
+      "related": "You may also like",
+      "guarantee": "Purchase guarantee",
+      "guarantee1": "Auto delivery after payment, credentials sent instantly",
+      "guarantee2": "Guest checkout, look up with email + order password",
+      "guarantee3": "Digital goods are non-refundable once delivered",
+      "priceLabel": "Price",
+      "stockLabel": "Stock",
+      "deliveryLabel": "Delivery",
+      "tagsLabel": "Tags"
     },
     "checkout": {
       "summaryTitle": "Order summary",
@@ -1775,7 +1795,8 @@
       "hideItems": "Hide items",
       "contactTitle": "Contact",
       "payTitle": "Payment",
-      "payableLabel": "Total due"
+      "payableLabel": "Total due",
+      "orderItems": "Items"
     },
     "payment": {
       "amountTitle": "Amount due",
@@ -1787,7 +1808,44 @@
       "resultsTitle": "Results"
     },
     "cart": {
-      "summaryBar": "Total"
+      "summaryBar": "Total",
+      "colProduct": "Product",
+      "colPrice": "Unit price",
+      "colQty": "Qty",
+      "colSubtotal": "Subtotal",
+      "colAction": "Action",
+      "continue": "Continue shopping",
+      "summaryTitle": "Summary"
+    },
+    "shell": {
+      "allCategories": "All categories",
+      "search": "Search",
+      "cart": "Cart",
+      "orders": "My orders",
+      "lookup": "Guest lookup",
+      "welcome": "Welcome to {site}",
+      "language": "Language",
+      "theme": "Theme",
+      "categories": "Categories",
+      "me": "Me",
+      "notice": "Notice",
+      "hello": "Hi, {name}",
+      "loginRegister": "Sign in / Register",
+      "menu": "Menu"
+    },
+    "footer": {
+      "shopping": "Shopping guide",
+      "help": "Help center",
+      "trust": "Our promise",
+      "trust1": "Auto delivery on payment",
+      "trust1Desc": "Keys arrive on the order page and by email instantly",
+      "trust2": "Multiple payment methods",
+      "trust2Desc": "Every channel the store has enabled",
+      "trust3": "Guest checkout",
+      "trust3Desc": "Look up orders with email and order password",
+      "trust4": "Privacy first",
+      "trust4Desc": "Credentials are visible only to you",
+      "contact": "Contact us"
     }
   }
 }

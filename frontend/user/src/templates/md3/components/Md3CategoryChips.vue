@@ -1,5 +1,5 @@
 <template>
-  <aside class="min-w-0 lg:sticky lg:top-6">
+  <aside class="min-w-0 lg:sticky lg:top-[92px]" data-test="category-side">
     <!-- 移动端 / 平板：横向滚动的 filter chips -->
     <div class="-mx-4 flex gap-2 overflow-x-auto px-4 pb-1 [scrollbar-width:none] sm:-mx-6 sm:px-6 lg:hidden [&::-webkit-scrollbar]:hidden">
       <button
@@ -26,7 +26,7 @@
           v-for="child in grp.children"
           :key="`chip-${child.id}`"
           type="button"
-          class="md3-chip max-w-[60vw] flex-none"
+          class="md3-chip md3-chip-sm max-w-[60vw] flex-none"
           :class="{ 'md3-chip-selected': selectedCategory === child.id }"
           @click="$emit('select', child.id)"
         >
@@ -36,30 +36,30 @@
       </template>
     </div>
 
-    <!-- 桌面：导航抽屉风格列表 -->
-    <div class="hidden rounded-[var(--md-shape-lg)] bg-[color:var(--md-sys-color-surface-container-low)] p-3 lg:block">
-      <div class="md3-title-s px-4 pb-2 pt-2 text-[color:var(--md-sys-color-on-surface-variant)]">{{ t('products.categories') }}</div>
-      <div class="grid gap-0.5">
-        <button type="button" class="md3-list-item min-h-[48px] py-0 text-left" :class="{ 'is-active': selectedCategory === null }" @click="$emit('select', null)">
+    <!-- 桌面：分类面板 -->
+    <div class="md3-panel hidden lg:block">
+      <div class="md3-panel-title">{{ t('md3.products.sidebarTitle') }}</div>
+      <div class="py-1">
+        <button type="button" class="md3-side-cat w-full text-left" :class="{ 'text-[color:var(--md-sys-color-primary)] bg-[color:var(--md-sys-color-surface-container)]': selectedCategory === null }" @click="$emit('select', null)">
           <LayoutGrid />
-          <span class="md3-label-l min-w-0 flex-1 truncate">{{ t('products.allCategories') }}</span>
+          <b class="min-w-0 flex-1 truncate">{{ t('products.allCategories') }}</b>
         </button>
         <template v-for="grp in categoryGroups" :key="grp.id">
-          <div class="flex items-center gap-1">
+          <div class="flex items-stretch">
             <button
               type="button"
-              class="md3-list-item min-h-[48px] min-w-0 flex-1 py-0 text-left"
-              :class="{ 'is-active': selectedCategory === grp.id }"
+              class="md3-side-cat min-w-0 flex-1 text-left"
+              :class="{ 'text-[color:var(--md-sys-color-primary)] bg-[color:var(--md-sys-color-surface-container)]': selectedCategory === grp.id }"
               @click="$emit('select', grp.id)"
             >
-              <img v-if="grp.icon" :src="getImageUrl(grp.icon)" :alt="catName(grp)" loading="lazy" class="h-[22px] w-[22px] flex-none rounded-[6px] object-cover" />
+              <img v-if="grp.icon" :src="getImageUrl(grp.icon)" :alt="catName(grp)" loading="lazy" />
               <Tag v-else />
-              <span class="md3-label-l min-w-0 flex-1 truncate">{{ catName(grp) }}</span>
+              <b class="min-w-0 flex-1 truncate">{{ catName(grp) }}</b>
             </button>
             <button
               v-if="grp.children.length"
               type="button"
-              class="md3-icon-btn md3-icon-btn-sm"
+              class="md3-icon-btn md3-icon-btn-sm my-auto mr-2 flex-none"
               :class="expandedParentIds.includes(grp.id) ? 'text-[color:var(--md-sys-color-primary)]' : ''"
               :aria-expanded="expandedParentIds.includes(grp.id)"
               :aria-label="catName(grp)"
@@ -73,11 +73,11 @@
               v-for="child in grp.children"
               :key="child.id"
               type="button"
-              class="md3-list-item min-h-[44px] py-0 pl-12 text-left"
-              :class="{ 'is-active': selectedCategory === child.id }"
+              class="md3-side-cat w-full py-2 pl-12 text-left"
+              :class="{ 'text-[color:var(--md-sys-color-primary)] bg-[color:var(--md-sys-color-surface-container)]': selectedCategory === child.id }"
               @click="$emit('select', child.id)"
             >
-              <span class="md3-label-l min-w-0 flex-1 truncate">{{ catName(child) }}</span>
+              <span class="md3-body-m min-w-0 flex-1 truncate">{{ catName(child) }}</span>
             </button>
           </template>
         </template>

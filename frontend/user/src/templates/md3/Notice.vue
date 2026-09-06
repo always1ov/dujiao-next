@@ -11,12 +11,11 @@
 
     <template v-else-if="notices.length > 0">
       <div class="mx-auto grid max-w-[880px] gap-3">
-        <button
+        <RouterLink
           v-for="notice in notices"
           :key="notice.id"
-          type="button"
+          :to="`/blog/${notice.slug}`"
           class="md3-card-outlined md3-card-interactive group flex w-full items-center gap-4 px-5 py-4 text-left"
-          @click="goToNotice(notice.slug)"
         >
           <div class="relative grid h-14 w-14 flex-none place-items-center overflow-hidden rounded-full max-[640px]:hidden" :class="notice.thumbnail ? 'bg-[color:var(--md-sys-color-surface-container)]' : 'bg-[color:var(--md-ext-warning-container)] text-[color:var(--md-ext-on-warning-container)]'">
             <img v-if="notice.thumbnail" :src="getImageUrl(notice.thumbnail)" :alt="getLocalizedText(notice.title)" loading="lazy" class="absolute inset-0 h-full w-full object-cover" />
@@ -31,7 +30,7 @@
             <p class="md3-body-m mt-0.5 truncate text-[color:var(--md-sys-color-on-surface-variant)]">{{ getLocalizedText(notice.summary) }}</p>
           </div>
           <ChevronRight class="h-5 w-5 flex-none text-[color:var(--md-sys-color-on-surface-variant)] transition group-hover:translate-x-0.5" />
-        </button>
+        </RouterLink>
       </div>
       <Md3Pagination :page="currentPage" :total-pages="totalPages" @change="changePage" />
     </template>
@@ -52,6 +51,6 @@ const { t } = useI18n()
 
 const {
   loading, posts: notices, currentPage, totalPages,
-  getLocalizedText, formatDate, goToPost: goToNotice, changePage,
+  getLocalizedText, formatDate, changePage,
 } = usePostList('notice', { title: () => t('nav.notice'), canonicalPath: '/notice' })
 </script>

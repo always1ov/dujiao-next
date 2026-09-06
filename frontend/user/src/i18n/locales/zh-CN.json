@@ -1748,13 +1748,24 @@
         }
       },
       "latestTitle": "最近更新",
-      "trustLookup": "游客下单凭邮箱和订单密码随时查单"
+      "trustLookup": "游客下单凭邮箱和订单密码随时查单",
+      "hotTitle": "热门推荐",
+      "noticeTitle": "最新公告",
+      "blogTitle": "文章教程",
+      "categoryNav": "分类导航",
+      "moreNotices": "更多公告",
+      "moreBlog": "更多文章",
+      "noBanner": "正版数字商品，付款即到账",
+      "shopNow": "马上选购",
+      "viewCategory": "进入分类"
     },
     "products": {
       "resultCount": "{n} 件商品",
       "viewGrid": "网格",
       "viewList": "列表",
-      "toolbarLabel": "筛选与视图"
+      "toolbarLabel": "筛选与视图",
+      "sidebarTitle": "商品分类",
+      "allTitle": "全部商品"
     },
     "detail": {
       "tabDetails": "商品详情",
@@ -1766,7 +1777,16 @@
       "noteNoAfterSales": "虚拟商品一经交付不支持退换，下单前请确认规格与数量。",
       "noteLookup": "游客下单请记住邮箱与订单密码，凭它们在「游客查单」找回订单。",
       "noteMember": "该商品仅限会员购买，登录后即可下单。",
-      "gallery": "商品图"
+      "gallery": "商品图",
+      "related": "同类推荐",
+      "guarantee": "购买保障",
+      "guarantee1": "付款后自动发货，凭证即时送达",
+      "guarantee2": "游客可下单，邮箱 + 订单密码查单",
+      "guarantee3": "虚拟商品一经交付不支持退换",
+      "priceLabel": "价格",
+      "stockLabel": "库存",
+      "deliveryLabel": "交付",
+      "tagsLabel": "标签"
     },
     "checkout": {
       "summaryTitle": "订单摘要",
@@ -1775,7 +1795,8 @@
       "hideItems": "收起明细",
       "contactTitle": "联系方式",
       "payTitle": "支付方式",
-      "payableLabel": "应付"
+      "payableLabel": "应付",
+      "orderItems": "商品清单"
     },
     "payment": {
       "amountTitle": "应付金额",
@@ -1787,7 +1808,44 @@
       "resultsTitle": "查询结果"
     },
     "cart": {
-      "summaryBar": "合计"
+      "summaryBar": "合计",
+      "colProduct": "商品",
+      "colPrice": "单价",
+      "colQty": "数量",
+      "colSubtotal": "小计",
+      "colAction": "操作",
+      "continue": "继续购物",
+      "summaryTitle": "结算信息"
+    },
+    "shell": {
+      "allCategories": "全部分类",
+      "search": "搜索",
+      "cart": "购物车",
+      "orders": "我的订单",
+      "lookup": "游客查单",
+      "welcome": "欢迎来到 {site}",
+      "language": "语言",
+      "theme": "深浅色",
+      "categories": "分类",
+      "me": "我的",
+      "notice": "公告",
+      "hello": "你好，{name}",
+      "loginRegister": "登录 / 注册",
+      "menu": "菜单"
+    },
+    "footer": {
+      "shopping": "购物指南",
+      "help": "帮助中心",
+      "trust": "服务保障",
+      "trust1": "付款后自动发货",
+      "trust1Desc": "卡密即时送达订单页与邮箱",
+      "trust2": "多种支付方式",
+      "trust2Desc": "支持店铺开启的所有支付渠道",
+      "trust3": "游客免注册下单",
+      "trust3Desc": "凭邮箱与订单密码随时查单",
+      "trust4": "隐私保护",
+      "trust4Desc": "凭证仅你本人可见",
+      "contact": "联系我们"
     }
   }
 }
