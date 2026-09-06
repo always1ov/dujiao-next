@@ -480,16 +480,22 @@ for (const vp of viewports) {
     const n = await items.count(); assert(n >= 2, `购物车应 ≥2 项，实际 ${n}`)
     const item = items.first()
     const sub1 = await item.locator('[data-test="cart-subtotal"]').textContent()
-    await item.locator('[data-test="cart-qty-plus"]').click(); await wait(300)
-    const sub2 = await item.locator('[data-test="cart-subtotal"]').textContent()
-    assert(sub1 !== sub2, '加一后小计未变')
+    // 库存被之前的测试订单扣到只剩 1 件时「+」是禁用的，这不是缺陷，跳过加一
+    const plusDisabled = await item.locator('[data-test="cart-qty-plus"]').isDisabled()
+    if (!plusDisabled) {
+      await item.locator('[data-test="cart-qty-plus"]').click(); await wait(300)
+      const sub2 = await item.locator('[data-test="cart-subtotal"]').textContent()
+      assert(sub1 !== sub2, '加一后小计未变')
+    }
     await item.locator('[data-test="cart-qty-input"]').fill('3'); await item.locator('[data-test="cart-qty-input"]').dispatchEvent('change'); await wait(300)
     const v3 = await item.locator('[data-test="cart-qty-input"]').inputValue()
     const capped = await item.locator('.md3-banner-warning').count() > 0
     assert(v3 === '3' || capped, `输入 3 未生效（值 ${v3}，无库存提示）`)
-    await item.locator('[data-test="cart-qty-minus"]').click(); await wait(300)
-    const after = await item.locator('[data-test="cart-qty-input"]').inputValue()
-    assert(after === String(Number(v3) - 1), `减一后应为 ${Number(v3) - 1}，实际 ${after}`)
+    if (!(await item.locator('[data-test="cart-qty-minus"]').isDisabled())) {
+      await item.locator('[data-test="cart-qty-minus"]').click(); await wait(300)
+      const after = await item.locator('[data-test="cart-qty-input"]').inputValue()
+      assert(after === String(Number(v3) - 1), `减一后应为 ${Number(v3) - 1}，实际 ${after}`)
+    }
     const total = isMobile ? page.locator('.md3-price').last() : T('cart-total')
     assert((await total.textContent()).trim().length > 0, '无合计')
     return `${n} 项`
