@@ -23,18 +23,16 @@
           </div>
         </aside>
 
-        <!-- 中：轮播（没有横幅时放品牌口号卡） -->
-        <div class="min-h-[220px] min-w-0 lg:min-h-[340px]" :class="{ 'lg:col-span-2': isListMode }">
+        <!-- 中：轮播。后台没配横幅时整列不显示（店主不要「马上选购」那种兜底卡），右侧面板横排占满 -->
+        <div v-if="hasBanners !== false" class="min-h-[220px] min-w-0 lg:min-h-[340px]" :class="{ 'lg:col-span-2': isListMode }">
           <Md3BannerHero variant="card" @loaded="hasBanners = $event" />
-          <div v-if="hasBanners === false" class="flex h-full min-h-[220px] flex-col justify-center gap-4 rounded-[var(--md-shape-md)] bg-[color:var(--md-sys-color-primary-container)] p-6 text-[color:var(--md-sys-color-on-primary-container)] sm:p-8">
-            <p class="md3-label-l opacity-80">{{ brandName }}</p>
-            <h1 class="md3-headline-s sm:md3-headline-m font-medium">{{ brandDescription || t('md3.home.noBanner') }}</h1>
-            <div><RouterLink to="/products" class="md3-btn md3-btn-filled">{{ t('md3.home.shopNow') }} <ArrowRight /></RouterLink></div>
-          </div>
         </div>
 
-        <!-- 右：最新公告 + 怎么买 -->
-        <aside class="grid gap-4 lg:grid-rows-[auto_1fr]">
+        <!-- 右：最新公告 + 怎么买（没横幅时并排铺满一行） -->
+        <aside
+          class="grid gap-4"
+          :class="hasBanners === false ? [isListMode ? 'lg:col-span-3' : 'lg:col-span-2', noticeEnabled ? 'lg:grid-cols-2' : ''] : 'lg:grid-rows-[auto_1fr]'"
+        >
           <div v-if="noticeEnabled" class="md3-panel" data-test="home-notice-panel">
             <div class="md3-panel-title">
               {{ t('md3.home.noticeTitle') }}
@@ -53,7 +51,7 @@
           </div>
           <div class="md3-panel">
             <div class="md3-panel-title">{{ t('md3.home.howTitle') }}</div>
-            <ol class="grid gap-3 p-4">
+            <ol class="grid gap-3 p-4" :class="{ 'sm:grid-cols-3': hasBanners === false && !noticeEnabled }">
               <li v-for="(step, idx) in steps" :key="step.key" class="flex items-start gap-3">
                 <span class="md3-label-l grid h-7 w-7 flex-none place-items-center rounded-full bg-[color:var(--md-sys-color-primary-container)] text-[color:var(--md-sys-color-on-primary-container)]">{{ idx + 1 }}</span>
                 <span class="min-w-0">
@@ -96,11 +94,6 @@
             @toggle="toggleParentCategory"
           />
           <main class="min-w-0">
-            <label class="md3-search md3-search-sm mb-4">
-              <Search />
-              <input v-model="searchQuery" type="search" :placeholder="t('products.searchBoxPlaceholder')" :aria-label="t('products.searchLabel')" />
-              <button v-if="searchQuery" type="button" class="md3-icon-btn md3-icon-btn-sm" :aria-label="t('blog.searchClear')" @click="clearSearch"><X /></button>
-            </label>
             <div v-if="listLoading" class="space-y-2.5">
               <div v-for="i in 8" :key="i" class="md3-skeleton h-[88px]"></div>
             </div>
@@ -219,11 +212,10 @@
 import { computed, onMounted, onUnmounted, ref, watch } from 'vue'
 import { useRoute } from 'vue-router'
 import { useI18n } from 'vue-i18n'
-import { ArrowRight, ChevronRight, CreditCard, LayoutGrid, PackageOpen, Search, SearchX, ShieldCheck, Tag, UserPlus, X, Zap } from 'lucide-vue-next'
+import { ChevronRight, CreditCard, LayoutGrid, PackageOpen, SearchX, ShieldCheck, Tag, UserPlus, Zap } from 'lucide-vue-next'
 import { categoryAPI, postAPI, productAPI } from '../../api'
 import { buildCategoryGroups, createCategoryMap, type PublicCategory } from '../../utils/category'
 import { getImageUrl } from '../../utils/image'
-import { getLocalizedText as localizeMap } from '../../utils/resellerSiteConfig'
 import { useLocalized } from '../../composables/useProduct'
 import { useProductList } from '../../composables/useProductList'
 import { useProductListGroups, type ProductGroup } from '../../composables/useProductListGroups'
@@ -246,12 +238,6 @@ const { getLocalizedText } = useLocalized()
 const appStore = useAppStore()
 const { isListMode, blogEnabled, noticeEnabled } = useNavConfig()
 
-const brandName = computed(() => String(appStore.config?.brand?.site_name || '').trim())
-const brandDescription = computed(() => {
-  const desc = appStore.config?.brand?.site_description
-  if (desc && typeof desc === 'object') return localizeMap(desc as Record<string, string>, appStore.locale)
-  return typeof desc === 'string' ? desc.trim() : ''
-})
 
 const steps = [{ key: 'pick' }, { key: 'pay' }, { key: 'get' }]
 
